@@ -4,10 +4,12 @@ import java.util.Scanner;
 public class Main {
     private ArrayList<User> listOfUsers = new ArrayList<>();
     private Rooms listOfRooms = new Rooms();
+    private Customers customerDirectory = new Customers();
 
+    private String userName = "";
     private enum Access {ADMIN, GUEST}
 
-    private enum Filter {
+    public enum Filter {
         ALL, AVAILABLE, BOOKED,
         NAME, SSN, PHONE, ADDRESS
     }
@@ -20,7 +22,15 @@ public class Main {
         hotelApp.listOfUsers.add(new User("gitRalle", "1234", true));
         hotelApp.listOfUsers.add(new User("guest", "1234", false));
 
-        hotelApp.listOfRooms.get(0).setBooked(true);
+        Customer obj1 = new Customer("Anna", "Anka", "500422-1639", "0787555555", "Main Str 17",
+                "Anka1", "1234", false);
+        Customer obj2 = new Customer("Harry", "Karlsson", "670422-2020", "0786344555", "Abbey Rd 2",
+                "Karlsson1", "1234", false);
+        hotelApp.listOfUsers.add(obj1);
+        hotelApp.listOfUsers.add(obj2);
+        hotelApp.customerDirectory.add(obj1);
+        hotelApp.customerDirectory.add(obj2);
+
         Access user;
         boolean cont;
         boolean stayLoggedIn = true;
@@ -82,14 +92,16 @@ public class Main {
             for (int i = 0; i < listOfUsers.size(); i++) {
                 if (listOfUsers.get(i).getUserName().equals(username) && listOfUsers.get(i).getPassWord().equals(password) && listOfUsers.get(i).getFullAccess()) {
                     System.out.println("\nLogged in as " + username + "\n");
+                    user = Access.ADMIN;
+                    userName = listOfUsers.get(i).getUserName();
                     i = listOfUsers.size();
                     attempts = 3;
-                    user = Access.ADMIN;
                 } else if (listOfUsers.get(i).getUserName().equals(username) && listOfUsers.get(i).getPassWord().equals(password) && !listOfUsers.get(i).getFullAccess()) {
                     System.out.println("\nLogged in as " + username + "\n");
+                    user = Access.GUEST;
+                    userName = listOfUsers.get(i).getUserName();
                     i = listOfUsers.size();
                     attempts = 3;
-                    user = Access.GUEST;
                 }
             }
             if (attempts == 2) {
@@ -105,7 +117,7 @@ public class Main {
 
     private void printMenuStart(Access type) {
         if (type == Access.ADMIN) {
-            System.out.println(type + "         2018/11/29 12:00");
+            System.out.println(userName + "\n" + type + "              2018/11/29");
             System.out.println("-----------------------------");
             System.out.println("| 1. New Booking             |  NOT DONE");
             System.out.println("| 2. Manage Bookings         |  DONE");
@@ -116,7 +128,7 @@ public class Main {
             System.out.println("| 7. Exit                    |  DONE");
             System.out.println("-----------------------------");
         } else {
-            System.out.println(type + "                2018/11/29 12:00");
+            System.out.println(userName + "\n" + type + "                     2018/11/29");
             System.out.println("------------------------------------");
             System.out.println("1. Make A New Booking               |  NOT DONE");
             System.out.println("2. View Available Rooms             |  DONE");
@@ -144,7 +156,7 @@ public class Main {
 
         if (type == Access.ADMIN) {
             // Mange Bookings
-            System.out.println("\n" + type + "          2018/11/29");
+            System.out.println("\n" + userName + "\n" + type + "          2018/11/29");
             System.out.println("-------------------------");
             System.out.println("| 1. Edit Booking        |  NOT DONE");
             System.out.println("| 2. Search For Booking  |  NOT DONE");
@@ -155,7 +167,7 @@ public class Main {
             System.out.println("");
         } else {
             // View Available Rooms
-            System.out.println("\n" + type + "                                  2018/11/29");
+            System.out.println("\n" + userName + "\n" + type + "                                  2018/11/29");
             System.out.println("-------------------------------------------------");
             System.out.println("1. View All Currently Available Rooms            |  DONE");
             System.out.println("2. View Available Rooms Within Specified Dates   |  NOT DONE");
@@ -178,7 +190,7 @@ public class Main {
         int choice;
 
         if (type == Access.ADMIN) {
-            System.out.println("\n" + type);
+            System.out.println("\n" + userName + "\n" + type);
             System.out.println("MANAGE ROOMS      2018/11/29");
             System.out.println("---------------------------");
             System.out.println("| 1. View Available Rooms  |  DONE");
@@ -259,7 +271,7 @@ public class Main {
         int choice;
 
         if (type == Access.ADMIN) {
-            System.out.println("\n" + type + "             2018/11/29 12:00");
+            System.out.println("\n" + userName + "\n" + type + "                  2018/11/29");
             System.out.println("---------------------------------");
             System.out.println("| 1. Add New Customer            |  DONE 99%");
             System.out.println("| 2. Remove Customer             |  NOT DONE");
@@ -272,7 +284,7 @@ public class Main {
 
             switch (choice) {
                 case 1:
-                    addCustomer(); // Method call to add a new customer (incomplete)
+                    addCustomer();
                     break;
 
                 case 2:
@@ -281,8 +293,7 @@ public class Main {
                     break;
 
                 case 3:
-                    // Method call to 'View list of all customers'
-                    System.out.println("View list of all customers coming soon!\n");
+                    customerDirectory.viewCustomers();
                     break;
 
                 case 4:
@@ -295,7 +306,7 @@ public class Main {
                     break;
             }
         } else {
-            System.out.println("\n" + type + "                2018/11/29 12:00");
+            System.out.println("\n" + userName + "\n" + type + "                     2018/11/29");
             System.out.println("------------------------------------");
             System.out.println("1. Update Your Address              |  NOT DONE");
             System.out.println("2. Update Your Phone Number         |  NOT DONE");
@@ -387,8 +398,24 @@ public class Main {
                 System.out.println("\nAddress should not contain any illegal characters");
             }
         } while (counter != 0);
-        System.out.println("Customer attributes successfully validated!\n");
-        // Create customer object
+
+        // Set customer userName
+        int userNameCounter = 1;
+        for (int i = 0; i < customerDirectory.size(); i++) {
+            if (customerDirectory.get(i).getLastName().equalsIgnoreCase(lastName)) {
+                userNameCounter++;
+            }
+        }
+        Customer temp = new Customer(firstName, lastName, ssn, phoneNumber, address,
+                lastName+String.valueOf(userNameCounter), "1234", false);
+        customerDirectory.add(temp);
+        listOfUsers.add(temp);
+        System.out.printf("Auto-generated username: %s%nAuto-generated password: %s%n",
+                temp.getUserName(), temp.getPassWord());
+        System.out.print("Press any key to return to Main Menu >>");
+        input.nextLine();
+        System.out.println("");
+
     }
 
     // Menu 5 and it's respective methods
@@ -415,7 +442,7 @@ public class Main {
         if (type == Filter.NAME) {
             for (int i = 0; i < string.length(); i++) {
                 for (int x = 0; x < charsPlusNumbers.length; x++) {
-                    if (String.valueOf(string.charAt(i)).equalsIgnoreCase(charsPlusLetters[x])) {
+                    if (String.valueOf(string.charAt(i)).equalsIgnoreCase(charsPlusNumbers[x])) {
                         counter++;
                     }
                 }
