@@ -29,7 +29,4 @@ public class Rooms {
     public int size() {
         return listOfRooms.size();
     }
-
-
-
 }

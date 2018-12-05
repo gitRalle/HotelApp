@@ -6,8 +6,11 @@ public class Main {
     private Rooms listOfRooms = new Rooms();
 
     private enum Access {ADMIN, GUEST}
-    private enum Filter {ALL, AVAILABLE, BOOKED,
-                         NAME, SSN, PHONE, ADDRESS}
+
+    private enum Filter {
+        ALL, AVAILABLE, BOOKED,
+        NAME, SSN, PHONE, ADDRESS
+    }
 
     private Scanner input = new Scanner(System.in);
 
@@ -17,6 +20,7 @@ public class Main {
         hotelApp.listOfUsers.add(new User("gitRalle", "1234", true));
         hotelApp.listOfUsers.add(new User("guest", "1234", false));
 
+        hotelApp.listOfRooms.get(0).setBooked(true);
         Access user;
         boolean cont;
         boolean stayLoggedIn = true;
@@ -387,6 +391,15 @@ public class Main {
         // Create customer object
     }
 
+    // Menu 5 and it's respective methods
+    private void printMenuV(Access type) {
+        if (type == Access.ADMIN) {
+            // Check Out
+        } else {
+            // Edit Bookings
+        }
+    }
+
     private int validateString(String string, Filter type) {
         int counter = 0;
         String[] charsOnly = {"!", "@", "#", "£", "¤", "$", "%", "&", "/", "{", "(", "[", ")", "]", "=", "}", "?", "+", "´", "`",
@@ -438,12 +451,75 @@ public class Main {
         return counter;
     }
 
-    // Menu 5 and it's respective methods
-    private void printMenuV(Access type) {
-        if (type == Access.ADMIN) {
-            // Check Out
-        } else {
-            // Edit Bookings
+    private void validateDate() { // Unnecessary method: include in addBooking?
+        int[] daysPerMonth = {0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+        int year = 2018;
+        int month, day, hour;
+        int counter = 0;
+
+    //    do {
+    //        System.out.print("year: ");
+    //        year = input.nextInt();
+    //        if (year < 2018) {
+    //            System.out.println("\nYear is out-of-range");
+    //            counter++;
+    //        }
+    //    } while (counter != 0);
+
+        do {
+            counter = 0;
+            System.out.print("(month / day): ");
+            month = input.nextInt();
+            day = input.nextInt();
+
+            if (month <= 0 || month > 12) {
+                System.out.println("\nMonth must be 1-12");
+                counter++;
+            }
+
+            if (day <= 0 || day > daysPerMonth[month] && !(month == 2 && day == 29)) {
+                System.out.println("\nday (" + day + ") out-of-range for specified month");
+                counter++;
+            }
+
+        if (month == 2 & day == 29 && !(year % 400 == 0 || (year % 4 == 0 && year % 100 != 0))) {
+            System.out.println("\nday ( "+ day + ") out of range for the specified month and year");
+            counter++;
         }
+        } while (counter != 0);
+        System.out.println("\n" + month + "/" + day);
+
+    //    do {
+    //        System.out.print("hour: ");
+    //        hour = input.nextInt();
+    //        if (hour < 0 || hour > 24) {
+    //            System.out.println("\n Hour is out-of-range");
+    //            counter++;
+    //        }
+    //    } while (counter != 0);
+
+        System.out.println("\nCheckIn date successfully validated!");
     }
+
+    // 2018-02-05 14:00 // checkIn
+    // 2018-03-10 12:00 // bookedUntil
+
+    private void checkRoomAvailability(Date checkIn, Date bookedUntil) {
+        int deltaYear, deltaMonth, deltaDay, deltaHour, deltaMinute;
+        int total;
+        int[] daysPerMonth = {0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+
+
+        // if (bookedUntil.getMonth() > checkIn.getMonth()) {return room not available;}
+        // if (bookedUntil.getMonth() < checkIn.getMonth()) {return room is available;}
+        // else if (bookedUntil.getMonth() == checkIn.getMonth()) {
+        // if (bookedUntil.getDay() > checkIn.getDay()) {return room not available;}
+        // if (bookedUntil.getDay() < checkIn.getDay()) {return room is available;}
+        // if (bookedUntil.getDay() == checkIn.getDay()) {return rooms is available;}
+        // }
+
+
+    }
+
+
 }
