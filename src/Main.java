@@ -3,10 +3,11 @@ import java.util.Scanner;
 
 public class Main {
     private ArrayList<User> listOfUsers = new ArrayList<>();
-    private Rooms listOfRooms = new Rooms();
+    private Rooms roomDirectory = new Rooms();
     private Customers customerDirectory = new Customers();
 
     private String userName = "";
+
     private enum Access {ADMIN, GUEST}
 
     public enum Filter {
@@ -117,27 +118,27 @@ public class Main {
 
     private void printMenuStart(Access type) {
         if (type == Access.ADMIN) {
-            System.out.println(userName + "\n" + type + "              2018/11/29");
+            System.out.println(userName + "\n" + type + "             [2018/11/29]");
             System.out.println("-----------------------------");
             System.out.println("| 1. New Booking             |  NOT DONE");
-            System.out.println("| 2. Manage Bookings         |  DONE");
-            System.out.println("| 3. Manage Rooms            |  DONE");
-            System.out.println("| 4. Manage Customers        |  DONE");
+            System.out.println("| 2. Manage Bookings         |");
+            System.out.println("| 3. Manage Rooms            |");
+            System.out.println("| 4. Manage Customers        |");
             System.out.println("| 5. Check Out Customer      |  NOT DONE");
-            System.out.println("| 6. Log Out                 |  DONE");
-            System.out.println("| 7. Exit                    |  DONE");
+            System.out.println("| 6. Log Out                 |");
+            System.out.println("| 7. Exit                    |");
             System.out.println("-----------------------------");
         } else {
-            System.out.println(userName + "\n" + type + "                     2018/11/29");
-            System.out.println("------------------------------------");
-            System.out.println("1. Make A New Booking               |  NOT DONE");
-            System.out.println("2. View Available Rooms             |  DONE");
-            System.out.println("3. View Your Booking History        |  NOT DONE");
-            System.out.println("4. Edit Your Personal Information   |  DONE");
-            System.out.println("5. Edit Bookings                    |  NOT DONE");
-            System.out.println("6. Log Out                          |  DONE");
-            System.out.println("7. Exit                             |  DONE");
-            System.out.println("------------------------------------");
+            System.out.println(userName + "\n" + type + "                                 [2018/11/29]");
+            System.out.println("-------------------------------------------------");
+            System.out.println("| 1. Make A New Booking                          |  NOT DONE");
+            System.out.println("| 2. View Available Rooms                        |");
+            System.out.println("| 3. View Your Booking History                   |  NOT DONE");
+            System.out.println("| 4. Edit Your Personal Information              |");
+            System.out.println("| 5. Edit Bookings                               |  NOT DONE");
+            System.out.println("| 6. Log Out                                     |");
+            System.out.println("| 7. Exit                                        |");
+            System.out.println("-------------------------------------------------");
         }
     }
 
@@ -156,22 +157,22 @@ public class Main {
 
         if (type == Access.ADMIN) {
             // Mange Bookings
-            System.out.println("\n" + userName + "\n" + type + "          2018/11/29");
-            System.out.println("-------------------------");
-            System.out.println("| 1. Edit Booking        |  NOT DONE");
-            System.out.println("| 2. Search For Booking  |  NOT DONE");
-            System.out.println("| 3. Back To Main Menu   |  DONE");
-            System.out.println("-------------------------");
+            System.out.println("\n" + userName + "\n" + "MANAGE BOOKINGS" + "   [2018/11/29]");
+            System.out.println("-----------------------------");
+            System.out.println("| 1. Edit Booking            |  NOT DONE");
+            System.out.println("| 2. Search For Booking      |  NOT DONE");
+            System.out.println("| 3. Back To Main Menu       |");
+            System.out.println("-----------------------------");
             System.out.print("Enter your choice >>");
             choice = input.nextInt();
             System.out.println("");
         } else {
             // View Available Rooms
-            System.out.println("\n" + userName + "\n" + type + "                                  2018/11/29");
+            System.out.println("\n" + userName + "\n" + "SELECT VIEW ROOMS                     [2018/11/29]");
             System.out.println("-------------------------------------------------");
-            System.out.println("1. View All Currently Available Rooms            |  DONE");
-            System.out.println("2. View Available Rooms Within Specified Dates   |  NOT DONE");
-            System.out.println("3. Back To Main Menu                             |  DONE");
+            System.out.println("| 1. View All Currently Available Rooms          |");
+            System.out.println("| 2. View Available Rooms Within Specified Dates |  NOT DONE");
+            System.out.println("| 3. Back To Main Menu                           |");
             System.out.println("-------------------------------------------------");
             System.out.print("Enter your choice >>");
             choice = input.nextInt();
@@ -190,16 +191,16 @@ public class Main {
         int choice;
 
         if (type == Access.ADMIN) {
-            System.out.println("\n" + userName + "\n" + type);
-            System.out.println("MANAGE ROOMS      2018/11/29");
-            System.out.println("---------------------------");
-            System.out.println("| 1. View Available Rooms  |  DONE");
-            System.out.println("| 2. View All Rooms        |  DONE");
-            System.out.println("| 3. Edit Room             |  NOT DONE");
-            System.out.println("| 4. Add Room              |  NOT DONE");
-            System.out.println("| 5. Remove Room           |  NOT DONE");
-            System.out.println("| 6. Back To Main Menu     |  DONE");
-            System.out.println("---------------------------");
+            System.out.println("\n" + userName );
+            System.out.println("MANAGE ROOMS      [2018/11/29]");
+            System.out.println("-----------------------------");
+            System.out.println("| 1. View Available Rooms    |");
+            System.out.println("| 2. View All Rooms          |");
+            System.out.println("| 3. Edit Room               |  NOT DONE");
+            System.out.println("| 4. Add Room                |  NOT DONE");
+            System.out.println("| 5. Remove Room             |  NOT DONE");
+            System.out.println("| 6. Back To Main Menu       |");
+            System.out.println("-----------------------------");
             System.out.print("Enter your choice >>");
             choice = input.nextInt();
             System.out.println("");
@@ -225,12 +226,12 @@ public class Main {
 
     private void viewRooms(Filter type) {
         if (type == Filter.ALL) {
-            System.out.println("Filter.ALL");
+            System.out.println("VIEW ROOMS\nFILTER.ALL       [2018/11/29]");
             System.out.printf("%s %5s %7s %11s%n", "RNR", "BEDS", "BALCONY", "PRICE (SEK)");
             System.out.println("-------------------------------");
-            for (int i = 0; i < listOfRooms.size(); i++) {
-                System.out.printf("%2d %5d %6s %10.2f    |%n", listOfRooms.get(i).getRoomNumber(), listOfRooms.get(i).getNumberOfBeds(),
-                        listOfRooms.get(i).isHasBalcony() ? "Yes" : "No", listOfRooms.get(i).getPricePerNight());
+            for (int i = 0; i < roomDirectory.size(); i++) {
+                System.out.printf("%2d %5d %6s %10.2f    |%n", roomDirectory.get(i).getRoomNumber(), roomDirectory.get(i).getNumberOfBeds(),
+                        roomDirectory.get(i).isHasBalcony() ? "Yes" : "No", roomDirectory.get(i).getPricePerNight());
 
             }
             System.out.println("-------------------------------");
@@ -241,14 +242,14 @@ public class Main {
 
         } else if (type == Filter.AVAILABLE) {
             int counter = 0;
-            System.out.println("Filter.AVAILABLE                                     2018/11/29");
+            System.out.println("VIEW ROOMS\nFILTER.AVAILABLE                                    [2018/11/29]");
             System.out.printf("%s %5s %7s %11s", "RNR", "BEDS", "BALCONY", "PRICE (SEK)");
             System.out.printf("%8s %6s %7s %7s%n", "RNR", "BEDS", "BALCONY", "PRICE (SEK)");
             System.out.println("-----------------------------------------------------------------");
-            for (int i = 0; i < listOfRooms.size(); i++) {
-                if (!listOfRooms.get(i).isBooked()) {
-                    System.out.printf("%2d %5d %6s %10.2f    |    ", listOfRooms.get(i).getRoomNumber(), listOfRooms.get(i).getNumberOfBeds(),
-                            listOfRooms.get(i).isHasBalcony() ? "Yes" : "No", listOfRooms.get(i).getPricePerNight());
+            for (int i = 0; i < roomDirectory.size(); i++) {
+                if (!roomDirectory.get(i).isBooked()) {
+                    System.out.printf("%2d %5d %6s %10.2f    |    ", roomDirectory.get(i).getRoomNumber(), roomDirectory.get(i).getNumberOfBeds(),
+                            roomDirectory.get(i).isHasBalcony() ? "Yes" : "No", roomDirectory.get(i).getPricePerNight());
                     counter++;
                 }
                 if ((i + 1) % 2 == 0) {
@@ -271,13 +272,13 @@ public class Main {
         int choice;
 
         if (type == Access.ADMIN) {
-            System.out.println("\n" + userName + "\n" + type + "                  2018/11/29");
-            System.out.println("---------------------------------");
-            System.out.println("| 1. Add New Customer            |  DONE 99%");
-            System.out.println("| 2. Remove Customer             |  NOT DONE");
-            System.out.println("| 3. View List Of All Customers  |  NOT DONE");
-            System.out.println("| 4. Back To Main Menu           |  DONE");
-            System.out.println("---------------------------------");
+            System.out.println("\n" + userName + "\nMANAGE CUSTOMERS  [2018/11/29]");
+            System.out.println("-----------------------------");
+            System.out.println("| 1. Add New Customer        |");
+            System.out.println("| 2. Remove Customer         |");
+            System.out.println("| 3. Display Customers       |");
+            System.out.println("| 4. Back To Main Menu       |");
+            System.out.println("-----------------------------");
             System.out.print("Enter your choice >>");
             choice = input.nextInt();
             System.out.println("");
@@ -288,49 +289,41 @@ public class Main {
                     break;
 
                 case 2:
-                    // Method call to 'Remove customer'
-                    System.out.println("Remove customer coming soon!\n");
+                    removeCustomer();
                     break;
 
                 case 3:
                     customerDirectory.viewCustomers();
                     break;
 
-                case 4:
-                    // Back To Main Menu
-                    break;
-
                 default:
                     // ?
-                    System.out.println("Default statement: ADMIN\n");
+                    System.out.println("Is not a valid option\n");
                     break;
             }
         } else {
-            System.out.println("\n" + userName + "\n" + type + "                     2018/11/29");
-            System.out.println("------------------------------------");
-            System.out.println("1. Update Your Address              |  NOT DONE");
-            System.out.println("2. Update Your Phone Number         |  NOT DONE");
-            System.out.println("3. View Your Personal Information   |  NOT DONE");
-            System.out.println("4. Back To Main Menu                |  DONE");
-            System.out.println("------------------------------------");
+            System.out.println("\n" + userName + "\nEDIT INFORMATION                      [2018/11/29]");
+            System.out.println("-------------------------------------------------");
+            System.out.println("| 1. Update Your Address                         |");
+            System.out.println("| 2. Update Your Phone Number                    |");
+            System.out.println("| 3. View Your Personal Information              |");
+            System.out.println("| 4. Back To Main Menu                           |");
+            System.out.println("-------------------------------------------------");
             System.out.print("Enter your choice >>");
             choice = input.nextInt();
             System.out.println("");
 
             switch (choice) {
                 case 1:
-                    // Method call to 'Update address'
-                    System.out.println("Update your address coming soon!\n");
+                    updateCustomerInfo(Filter.ADDRESS);
                     break;
 
                 case 2:
-                    // Method call to 'Update your phone number'
-                    System.out.println("Update your phone number coming soon!\n");
+                    updateCustomerInfo(Filter.PHONE);
                     break;
 
                 case 3:
-                    // Method call to 'View personal information'
-                    System.out.println("View your personal information coming soon!\n");
+                    viewCustomerInfo();
                     break;
 
                 case 4:
@@ -338,10 +331,68 @@ public class Main {
 
                 default:
                     // ?
-                    System.out.println("Default statement: GUEST\n");
+                    System.out.println("\n");
                     break;
             }
         }
+    }
+
+    private void viewCustomerInfo() {
+        int index = 99; // will never actually take on value 99
+        input.nextLine();
+
+        for (int i = 0; i < customerDirectory.size(); i++) {
+            if (customerDirectory.get(i).getUserName().equals(userName)) {
+                index = i;
+            }
+        }
+        System.out.println("CUSTOMER DETAILS          [2018/11/29]\n-------------------------------------");
+        System.out.printf("Name: %s %s%nSSN: %s%nPhone: %s%nAddress: %s%n",
+                customerDirectory.get(index).getFirstName(), customerDirectory.get(index).getLastName(), customerDirectory.get(index).getSSN(),
+                customerDirectory.get(index).getTelephoneNumber(), customerDirectory.get(index).getAddress());
+        System.out.println("-------------------------------------");
+        System.out.print("Press any key to return to Main Menu >>");
+        input.nextLine();
+        System.out.println("");
+    }
+
+    private void updateCustomerInfo(Filter type) {
+        int index = 99; // will never actually take on value 99
+        int counter = 0;
+        String string;
+        input.nextLine();
+
+        for (int i = 0; i < customerDirectory.size(); i++) {
+            if (customerDirectory.get(i).getUserName().equals(userName)) {
+                index = i;
+            }
+        }
+        if (type == Filter.ADDRESS) {
+            do {
+                counter = 0;
+                System.out.printf("Old Address: %s%nNew Address: ",
+                        customerDirectory.get(index).getAddress());
+                string = input.nextLine();
+                counter = validateString(string, Filter.ADDRESS);
+                if (counter != 0) {
+                    System.out.println("\nAddress should not contain any illegal characters");
+                }
+            } while (counter != 0);
+            customerDirectory.get(index).setAddress(string);
+        } else if (type == Filter.PHONE) {
+            do {
+                counter = 0;
+                System.out.printf("Old Phone Number: %s%nNew Phone Number: ",
+                        customerDirectory.get(index).getTelephoneNumber());
+                string = input.nextLine();
+                counter = validateString(string, Filter.PHONE);
+                if (string.length() != 10 || counter != 0) {
+                    System.out.println("\nPhone number must consist of ten digits without any hyphenate");
+                }
+            } while (counter != 0);
+            customerDirectory.get(index).setTelephoneNumber(string);
+        }
+        System.out.println("Information successfully updated\n");
     }
 
     private void addCustomer() {
@@ -371,7 +422,7 @@ public class Main {
 
         do {
             counter = 0;
-            System.out.print("Enter customer's ten digit social security number (YYMMDD-XXXX): ");
+            System.out.print("Enter customer's ten digit social security number (YYMMDD-XXXX): "); // validate months/days ?
             ssn = input.nextLine();
             counter = validateString(ssn, Filter.SSN);
             if (!String.valueOf(ssn.charAt(6)).equals("-") || counter != 0 || ssn.length() != 11) {
@@ -407,7 +458,7 @@ public class Main {
             }
         }
         Customer temp = new Customer(firstName, lastName, ssn, phoneNumber, address,
-                lastName+String.valueOf(userNameCounter), "1234", false);
+                lastName + String.valueOf(userNameCounter), "1234", false);
         customerDirectory.add(temp);
         listOfUsers.add(temp);
         System.out.printf("Auto-generated username: %s%nAuto-generated password: %s%n",
@@ -416,6 +467,49 @@ public class Main {
         input.nextLine();
         System.out.println("");
 
+    }
+
+    private void removeCustomer() {
+        int id;
+        int counter = 0;
+        if (customerDirectory.size() == 0) {
+            System.out.print("Customer Directory Is Empty\n");
+            System.out.print("Press any key to return to Main Menu >>");
+            input.nextLine();
+            input.nextLine();
+            System.out.println("");
+        } else {
+            System.out.println("REMOVE CUSTOMER                                                            [2018/11/29]" +
+                    "\n---------------------------------------------------------------------------------------");
+            for (int i = 0; i < customerDirectory.size(); i++) {
+                System.out.printf("[%s] [NAME: %s %s] [SSN: %s] [PHONE: %s] [ADDRESS: %s]%n", customerDirectory.get(i).getCustomerId(),
+                        customerDirectory.get(i).getFirstName(), customerDirectory.get(i).getLastName(),
+                        customerDirectory.get(i).getSSN(), customerDirectory.get(i).getTelephoneNumber(),
+                        customerDirectory.get(i).getAddress());
+            }
+            System.out.println("---------------------------------------------------------------------------------------");
+            do {
+                counter = 0;
+                System.out.print("Select Customer's ID: ");
+                id = input.nextInt();
+                for (int i = 0; i < customerDirectory.size(); i++) {
+                    if (customerDirectory.get(i).getCustomerId() != id) {
+                        counter++;
+                    }
+                }
+                if (counter == customerDirectory.size()) {
+                    System.out.println("\nInvalid ID");
+                }
+            } while (counter == customerDirectory.size());
+            // Swaps ID for Index
+            for (int i = 0; i < customerDirectory.size(); i++) {
+                if (customerDirectory.get(i).getCustomerId() == id) {
+                    id = i;
+                }
+            }
+            customerDirectory.remove(id);
+            System.out.println("Customer successfully removed\n");
+        }
     }
 
     // Menu 5 and it's respective methods
@@ -484,14 +578,14 @@ public class Main {
         int month, day, hour;
         int counter = 0;
 
-    //    do {
-    //        System.out.print("year: ");
-    //        year = input.nextInt();
-    //        if (year < 2018) {
-    //            System.out.println("\nYear is out-of-range");
-    //            counter++;
-    //        }
-    //    } while (counter != 0);
+        //    do {
+        //        System.out.print("year: ");
+        //        year = input.nextInt();
+        //        if (year < 2018) {
+        //            System.out.println("\nYear is out-of-range");
+        //            counter++;
+        //        }
+        //    } while (counter != 0);
 
         do {
             counter = 0;
@@ -509,21 +603,21 @@ public class Main {
                 counter++;
             }
 
-        if (month == 2 & day == 29 && !(year % 400 == 0 || (year % 4 == 0 && year % 100 != 0))) {
-            System.out.println("\nday ( "+ day + ") out of range for the specified month and year");
-            counter++;
-        }
+            if (month == 2 & day == 29 && !(year % 400 == 0 || (year % 4 == 0 && year % 100 != 0))) {
+                System.out.println("\nday ( " + day + ") out of range for the specified month and year");
+                counter++;
+            }
         } while (counter != 0);
         System.out.println("\n" + month + "/" + day);
 
-    //    do {
-    //        System.out.print("hour: ");
-    //        hour = input.nextInt();
-    //        if (hour < 0 || hour > 24) {
-    //            System.out.println("\n Hour is out-of-range");
-    //            counter++;
-    //        }
-    //    } while (counter != 0);
+        //    do {
+        //        System.out.print("hour: ");
+        //        hour = input.nextInt();
+        //        if (hour < 0 || hour > 24) {
+        //            System.out.println("\n Hour is out-of-range");
+        //            counter++;
+        //        }
+        //    } while (counter != 0);
 
         System.out.println("\nCheckIn date successfully validated!");
     }

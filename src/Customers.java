@@ -19,16 +19,25 @@ public class Customers {
         return listOfCustomers.size();
     }
     public void viewCustomers() {
-        System.out.println("DISPLAY CUSTOMERS\n##################################################################################");
-        for (int i = 0; i < listOfCustomers.size(); i++) {
-            System.out.printf("[%s] [NAME: %s %s] [SSN: %s] [PHONE: %s] [ADDRESS: %s]%n", listOfCustomers.get(i).getCustomerId(),
-                    listOfCustomers.get(i).getFirstName(), listOfCustomers.get(i).getLastName(),
-                    listOfCustomers.get(i).getSSN(), listOfCustomers.get(i).getTelephoneNumber(),
-                    listOfCustomers.get(i).getAddress());
+        if (listOfCustomers.size() == 0) {
+            System.out.print("Customer Directory Is Empty\n" +
+                    "Press any key to return to Main Menu >>");
+            input.nextLine();
+            System.out.println("");
         }
-        System.out.print("##################################################################################\nPress any key to return to Main Menu >>");
-        input.nextLine();
-
+        else {
+            System.out.println("DISPLAY CUSTOMERS                                                          [2018/11/29]" +
+                    "\n---------------------------------------------------------------------------------------");
+            for (int i = 0; i < listOfCustomers.size(); i++) {
+                System.out.printf("[%s] [NAME: %s %s] [SSN: %s] [PHONE: %s] [ADDRESS: %s]%n", listOfCustomers.get(i).getCustomerId(),
+                        listOfCustomers.get(i).getFirstName(), listOfCustomers.get(i).getLastName(),
+                        listOfCustomers.get(i).getSSN(), listOfCustomers.get(i).getTelephoneNumber(),
+                        listOfCustomers.get(i).getAddress());
+            }
+            System.out.print("---------------------------------------------------------------------------------------\nPress any key to return to Main Menu >>");
+            input.nextLine();
+            System.out.println("");
+        }
     }
 
 }
