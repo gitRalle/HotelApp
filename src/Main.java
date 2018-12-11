@@ -278,6 +278,7 @@ public class Main {
     private void viewRooms(Access type, Filter filt) {
         String stringChoice;
         int counter = 0;
+        int availableRoomCounter = 0;
         System.out.println("");
 
         if (filt == Filter.ALL) {
@@ -316,7 +317,12 @@ public class Main {
             }
 
         } else if (filt == Filter.AVAILABLE) {
-            if (roomDirectory.size() > 1) {
+            for (int i = 0; i < roomDirectory.size(); i++) {
+                if (!roomDirectory.get(i).isBooked()) {
+                    availableRoomCounter++;
+                }
+            }
+            if (availableRoomCounter > 1) {
                 System.out.println("VIEW ROOMS\nFILTER.AVAILABLE                                    [2018/11/29]");
                 System.out.printf("%s %5s %7s %11s", "RNR", "BEDS", "BALCONY", "PRICE (SEK)");
                 System.out.printf("%8s %6s %7s %7s%n", "RNR", "BEDS", "BALCONY", "PRICE (SEK)");
@@ -636,7 +642,7 @@ public class Main {
                 System.out.print("New RNR: ");
                 roomNumber = input.nextInt();
                 for (int i = 0; i < roomDirectory.size(); i++) {
-                    if (roomDirectory.get(i).getRoomNumber() == roomNumber || roomNumber <= 0 || roomNumber >= 100) {
+                    if (roomDirectory.get(i).getRoomNumber() == roomNumber && i != index || roomNumber <= 0 || roomNumber >= 100) {
                         counter++;
                     }
                 }
