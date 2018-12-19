@@ -5,12 +5,10 @@ public class Date {
     private int hour;
     private int minute;
 
-    public Date(int year, int month, int day, int hour, int minute) {
+    public Date(int year, int month, int day) {
         this.year = year;
         this.month = month;
         this.day = day;
-        this.hour = hour;
-        this.minute = minute;
     }
 
     public int getYear() {return year;}
@@ -18,5 +16,9 @@ public class Date {
     public int getDay() {return day;}
     public int getHour() {return hour;}
     public int getMinute() {return minute;}
+
+    public String toString() {
+        return String.format("%d/%02d/%02d", year, month, day);
+    }
 
 }

@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 public class Bookings {
     private ArrayList<Booking> listOfBookings = new ArrayList<>();
 
@@ -5,7 +7,7 @@ public class Bookings {
         return listOfBookings.get(index);
     }
     public void remove(int index) {
-        listOfBookings.remove(index)
+        listOfBookings.remove(index);
     }
     public void add(Booking b) {
         listOfBookings.add(b);

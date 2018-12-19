@@ -3,11 +3,11 @@ public class Booking {
     private final int bookingId = ++idCounter;
     private Customer customer;
     private Room room;
-    private Date checkIn = new Date(2018, 11, 29, 14, 0);
+    private Date checkIn = new Date(2018, 11, 29);
     private Date checkOut;
     private double totalPrice;
 
-    public Booking(Customer customer, Room room, Date checkOut, Double totalPrice) {
+    public Booking(Customer customer, Room room, Date checkOut, double totalPrice) {
         this.customer = customer;
         this.room = room;
         this.checkOut = checkOut;
@@ -17,7 +17,6 @@ public class Booking {
     public int getBookingId() {
         return bookingId;
     }
-
     public Customer getCustomer() {
         return customer;
     }
@@ -33,4 +32,5 @@ public class Booking {
     public double getTotalPrice() {
         return totalPrice;
     }
+    public void setTotalPrice(double totalPrice) {this.totalPrice = totalPrice;}
 }
