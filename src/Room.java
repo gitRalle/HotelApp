@@ -1,4 +1,6 @@
-public class Room {
+import java.io.Serializable;
+
+public class Room implements Serializable {
     private static int idCounter = 0;
     private final int roomId = ++idCounter;
     private int roomNumber;
@@ -15,6 +17,8 @@ public class Room {
         this.pricePerNight = pricePerNight;
     }
 
+
+
     public int getRoomId() {return roomId;}
     public int getRoomNumber() {return roomNumber;}
     public void setRoomNumber(int roomNumber) {this.roomNumber = roomNumber;}
@@ -26,5 +30,6 @@ public class Room {
     public void setPricePerNight(double pricePerNight) {this.pricePerNight = pricePerNight;}
     public boolean isBooked() {return isBooked;}
     public void setBooked(boolean isBooked) {this.isBooked = isBooked;}
+
 
 }

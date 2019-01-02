@@ -1,4 +1,6 @@
-public class Booking {
+import java.io.Serializable;
+
+public class Booking implements Serializable {
     private static int idCounter = 0;
     private final int bookingId = ++idCounter;
     private Customer customer;
@@ -23,12 +25,14 @@ public class Booking {
     public Room getRoom() {
         return room;
     }
+    public void setRoom(Room room) {this.room = room;}
     public Date getCheckIn() {
         return checkIn;
     }
     public Date getCheckOut() {
         return checkOut;
     }
+    public void setCheckOut(Date checkOut) {this.checkOut = checkOut;}
     public double getTotalPrice() {
         return totalPrice;
     }

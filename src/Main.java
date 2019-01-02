@@ -1,13 +1,11 @@
-import java.util.ArrayList;
-import java.util.Scanner;
+import java.util.*;
 
 public class Main {
+    private RoomGenerator roomDirectory = new RoomGenerator();
     private ArrayList<User> listOfUsers = new ArrayList<>();
-    private Rooms roomDirectory = new Rooms();
-    private Customers customerDirectory = new Customers();
-    private Bookings bookingDirectory = new Bookings();
-    private ArrayList<Booking> bookingHistory = new ArrayList<>();
-
+    private ArrayList<Customer> customerDirectory = new ArrayList<>();
+    private ArrayList<Booking> bookingDirectory = new ArrayList<>();
+    private ArrayList<Object> bookingHistory = new ArrayList<>();
     private String userName = "";
     private Date currentDate = new Date(2018, 11, 29);
 
@@ -18,12 +16,15 @@ public class Main {
         NAME, SSN, PHONE, ADDRESS,
         ADD, EDIT, REMOVE,
         RNR, BEDS, BALCONY, PRICE,
-        ID, CHECKOUT
+        ID, CHECKOUT,
+        ROOM,
+        USERNAME, PASSWORD
     }
 
     private enum Motive {
         VIEW, BOOKING, REMOVE,
-        CHECKOUT, NULL
+        CHECKOUT, NULL,
+        EDIT
     }
 
     private boolean cont;
@@ -32,9 +33,9 @@ public class Main {
 
     public static void main(String[] args) {
         Main hotelApp = new Main();
-        hotelApp.listOfUsers.add(new User("admin", "1234", true));
+        hotelApp.listOfUsers.add(new User("admin", "admin", true));
         hotelApp.listOfUsers.add(new User("gitRalle", "1234", true));
-        hotelApp.listOfUsers.add(new User("guest", "1234", false));
+        hotelApp.listOfUsers.add(new User("afgsuna", "1234", true));
 
         Customer obj1 = new Customer("Anna", "Anka", "500422-1639", "0787555555", "Main Str 17",
                 "Anka1", "1234", false);
@@ -158,21 +159,19 @@ public class Main {
 
     private void printMenuStart(Access type) {
         if (type == Access.ADMIN) {
-            System.out.println("\n" + userName);
-            System.out.println(type);
+            System.out.println("\n" + type + " " + userName);
             System.out.println("START MENU                            [" + currentDate.toString() + "]");
             System.out.println("-------------------------------------------------");
-            System.out.println("| 1. Help Me!                                    |  INCOMPLETE");
+            System.out.println("| 1. Help Me!                                    |");
             System.out.println("| 2. Manage Bookings                             |");
             System.out.println("| 3. Manage Accommodations                       |");
             System.out.println("| 4. Manage Customers                            |");
-            System.out.println("| 5. Account Settings                            |  NOT IMPLEMENTED");
+            System.out.println("| 5. Manage Accounts                             |");
             System.out.println("| 6. Log Out                                     |");
             System.out.println("| 7. Exit                                        |");
             System.out.println("-------------------------------------------------");
-        } else { // Customer needs to be able to checkout - not admin
-            System.out.println("\n" + userName);
-            System.out.println(type);
+        } else {
+            System.out.println("\n" + type + " " + userName);
             System.out.println("START MENU                            [" + currentDate.toString() + "]");
             System.out.println("-------------------------------------------------");
             System.out.println("| 1. Make A New Booking                          |");
@@ -181,54 +180,121 @@ public class Main {
             System.out.println("| 4. Edit Your Personal Information              |");
             System.out.println("| 5. Manage Bookings                             |");
             System.out.println("| 6. Check Out                                   |");
-            System.out.println("| 7. Help Me!                                    |  INCOMPLETE");
+            System.out.println("| 7. Help Me!                                    |");
             System.out.println("| 8. Log Out                                     |");
             System.out.println("| 9. Exit                                        |");
             System.out.println("-------------------------------------------------");
         }
     }
-
-    // Menu 1 and it's respective methods
     private void printMenuI(Access type) {
 
         if (type == Access.ADMIN) {
-            helpMe(Access.ADMIN);
-        }
-        else if (type == Access.GUEST) {
-            addBooking(Access.GUEST);
+            printHelpMenuStart(Access.ADMIN);
+        } else if (type == Access.GUEST) {
+            addBooking(Access.GUEST, Motive.BOOKING);
         }
     }
-    private void helpMe(Access type) {
+
+    private void printHelpMenuStart(Access type) {
+        int choice;
         String stringChoice;
 
         if (type == Access.ADMIN) {
-            System.out.println("\n" + type);
+            System.out.println("\n" + type + " " + userName);
+            System.out.println("HELP MENU                             [" + currentDate.toString() + "]");
             System.out.println("-------------------------------------------------");
-            System.out.println("| Help me text coming later                      |");
+            System.out.println("| 1. Description of General Hotel Features       |");
+            System.out.println("| 2. Description of Booking Features             | ");
+            System.out.println("| 3. Description of Room Features                |");
+            System.out.println("| 4. Description of Customer Features            |");
+            System.out.println("| 5. Description of Account/User Features        |");
+            System.out.println("| 6. Back To Main Menu                           |");
             System.out.println("-------------------------------------------------");
-            System.out.print("Press any key >>");
+            System.out.print("Enter your choice >>");
             stringChoice = input.next();
-            runCmd(stringChoice);
-        } else if (type == Access.GUEST) {
-            System.out.println("\n" + type);
+
+            if (!stringChoice.equals("1") && !stringChoice.equals("2") && !stringChoice.equals("3") &&
+            !stringChoice.equals("4") && !stringChoice.equals("5") && !stringChoice.equals("6")) {
+                runCmd(stringChoice);
+
+            } else {
+                choice = Integer.valueOf(stringChoice);
+
+                switch (choice) {
+                    case 1:
+                        printHelpMenuGeneral(Access.ADMIN);
+                        break;
+                    case 2:
+                        printHelpMenuBooking(Access.ADMIN);
+                        break;
+                    case 3:
+                        printHelpMenuAccommodations(Access.ADMIN);
+                        break;
+                    case 4:
+                        printHelpMenuCustomer(Access.ADMIN);
+                        break;
+                    case 5:
+                        printHelpMenuAccount(Access.ADMIN);
+                        break;
+                    case 6:
+                        break;
+                }
+            }
+        }
+
+        else if (type == Access.GUEST) {
+            System.out.println("\n" + type + " " + userName);
+            System.out.println("HELP MENU                             [" + currentDate.toString() + "]");
             System.out.println("-------------------------------------------------");
-            System.out.println("| Help me text coming later                      |");
+            System.out.println("| 1. Description of General Hotel Features       |");
+            System.out.println("| 2. Description of Booking Features             | ");
+            System.out.println("| 3. Description of Room Features                |");
+            System.out.println("| 4. Description of Customer Features            |");
+            System.out.println("| 5. Description of Account/User Features        |");
+            System.out.println("| 6. Back To Main Menu                           |");
             System.out.println("-------------------------------------------------");
-            System.out.print("Press any key >>");
+            System.out.print("Enter your choice >>");
             stringChoice = input.next();
+
+            if (!stringChoice.equals("1") && !stringChoice.equals("2") && !stringChoice.equals("3") &&
+            !stringChoice.equals("4") && !stringChoice.equals("5") && !stringChoice.equals("6")) {
+                // check for ./../...
+
+            } else {
+                choice = Integer.valueOf(stringChoice);
+
+                switch (choice) {
+                    case 1:
+                        printHelpMenuGeneral(Access.GUEST);
+                        break;
+                    case 2:
+                        printHelpMenuBooking(Access.GUEST);
+                        break;
+                    case 3:
+                        printHelpMenuAccommodations(Access.GUEST);
+                        break;
+                    case 4:
+                        printHelpMenuCustomer(Access.GUEST);
+                        break;
+                    case 5:
+                        printHelpMenuAccount(Access.GUEST);
+                        break;
+                    case 6:
+                        break;
+                }
+            }
         }
     }
 
-
-    private void addBooking(Access type) {
-        int id, customerIndex = 99, roomNumber, roomIndex = 99;
+    private void addBooking(Access type, Motive point) {
+        int id, customerIndex = 99, roomNumber, roomIndex = 99, howManyBookedRoomsCounter = 0;
         String stringChoice;
         int[] daysPerMonth = {0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
         int year = 2018, month = 11, day = 29;
         int counter = 0;
         double totalPrice;
 
-        if (type == Access.ADMIN) {
+        if (type == Access.ADMIN) { // Is no longer a presented user option
             viewCustomers(Motive.BOOKING);
             System.out.print("Select Customer's ID: ");
             id = input.nextInt();
@@ -247,60 +313,87 @@ public class Main {
             }
         }
         viewRooms(Access.ADMIN, Filter.AVAILABLE, Motive.BOOKING);
-        System.out.print("Select Room's RNR: ");
-        roomNumber = input.nextInt();
         for (int i = 0; i < roomDirectory.size(); i++) {
-            if (roomDirectory.get(i).getRoomNumber() == roomNumber) {
-                roomIndex = i;
-                break;
+            if (roomDirectory.get(i).isBooked()) {
+                howManyBookedRoomsCounter++;
             }
         }
-        // Date - currently only validates for year 2018
-        System.out.println("");
-        System.out.println(" ---------------     ----------------");
-        System.out.println("| CHECK-IN DATE |   | CHECK-OUT DATE |");
-        System.out.println("| ------------- |   | ---------------  ");
-        do {
-            counter = 0;
-            System.out.println("| YEAR:  2018   |   | YEAR:  2018");
-            System.out.print("| MONTH: 11     |   | MONTH: ");
-            month = input.nextInt();
-            System.out.print("| DAY:   29     |   | DAY:   ");
-            day = input.nextInt();
-            System.out.println("--------------------------------------");
-            if (month <= 0 || month > 12) {
-                System.out.println("\nMonth must be 1-12");
-                counter++;
-            }
-            if (day <= 0 || day > daysPerMonth[month] && !(month == 2 && day == 29)) {
-                System.out.println("\nday (" + day + ") out-of-range for specified month");
-                counter++;
-            }
-            if (month == 2 & day == 29 && !(year % 400 == 0 || (year % 4 == 0 && year % 100 != 0))) {
-                System.out.println("\nday ( " + day + ") out of range for the specified month and year");
-                counter++;
-            }
-            if (month < currentDate.getMonth() || month == currentDate.getMonth() && day <= currentDate.getDay()) {
-                System.out.println("\nout-of-range");
-                counter++;
-            }
-        } while (counter != 0);
+        if (howManyBookedRoomsCounter == roomDirectory.size()) {
 
-        Date checkIn = currentDate; // No reservations currently
-        Date checkOut = new Date(year, month, day);
-        totalPrice = calculateTotalPrice(checkIn, checkOut, roomDirectory.get(roomIndex).getPricePerNight());
-        Booking temp = new Booking(customerDirectory.get(customerIndex), roomDirectory.get(roomIndex), new Date(year, month, day), totalPrice);
-        bookingDirectory.add(temp);
-        roomDirectory.get(roomIndex).setBooked(true);
-        System.out.println("\nBooking successfully added");
-        System.out.print("Press any key >>");
-        stringChoice = input.next();
-        if (type == Access.ADMIN && stringChoice.equals(".")) {
-            // menu no longer exists
-        } else if (stringChoice.equals("..")) {
-            // Back to start
-        } else if (type == Access.ADMIN && !stringChoice.equals(".") && !stringChoice.equals("..")) {
-            runCmd(stringChoice);
+        } else {
+
+            do {
+                do {
+                    System.out.print("Select Room's RNR: ");
+                    roomNumber = input.nextInt();
+                    if (roomNumber <= 0 || roomNumber > roomDirectory.size()) {
+                        System.out.println("\nRNR [" + roomNumber + "] does not exist in room directory");
+                    }
+                } while (roomNumber <= 0 || roomNumber > roomDirectory.size());
+                for (int i = 0; i < roomDirectory.size(); i++) {
+                    if (roomDirectory.get(i).getRoomNumber() == roomNumber) {
+                        roomIndex = i;
+                        break;
+                    }
+                }
+                if (roomDirectory.get(roomIndex).isBooked()) {
+                    System.out.println("\nRNR [" + roomNumber + "] is not available for booking");
+                }
+            } while (roomDirectory.get(roomIndex).isBooked());
+            // Date - currently only validates for year 2018
+            System.out.println("");
+            System.out.println(" ---------------     ----------------");
+            System.out.println("| CHECK-IN DATE |   | CHECK-OUT DATE |");
+            System.out.println("| ------------- |   | ---------------  ");
+            do {
+                counter = 0;
+                System.out.println("| YEAR:  2018   |   | YEAR:  2018");
+                System.out.print("| MONTH: 11     |   | MONTH: ");
+                month = input.nextInt();
+                System.out.print("| DAY:   29     |   | DAY:   ");
+                day = input.nextInt();
+                System.out.println("--------------------------------------");
+                if (month <= 0 || month > 12) {
+                    System.out.println("\nMonth must be 1-12");
+                    counter++;
+                }
+                if (day <= 0 || day > daysPerMonth[month] && !(month == 2 && day == 29)) {
+                    System.out.println("\nday (" + day + ") out-of-range for specified month");
+                    counter++;
+                }
+                if (month == 2 & day == 29 && !(year % 400 == 0 || (year % 4 == 0 && year % 100 != 0))) {
+                    System.out.println("\nday ( " + day + ") out of range for the specified month and year");
+                    counter++;
+                }
+                if (month < currentDate.getMonth() || month == currentDate.getMonth() && day <= currentDate.getDay()) {
+                    System.out.println("\nout-of-range");
+                    counter++;
+                }
+            } while (counter != 0);
+
+            Date checkIn = currentDate; // No reservations currently
+            Date checkOut = new Date(year, month, day);
+            totalPrice = calculateTotalPrice(checkIn, checkOut, roomDirectory.get(roomIndex).getPricePerNight());
+            Booking temp = new Booking(customerDirectory.get(customerIndex), roomDirectory.get(roomIndex), new Date(year, month, day), totalPrice);
+            bookingDirectory.add(temp);
+            roomDirectory.get(roomIndex).setBooked(true);
+            System.out.println("\nBooking successfully added");
+
+            // readWrite
+            bookingHistory = ReadWriteObject.readObject();
+            bookingHistory.add(temp);
+            ReadWriteObject.writeObject(bookingHistory);
+        }
+        if (point == Motive.BOOKING) {
+            System.out.print("Press any key >>");
+            stringChoice = input.next();
+            if (type == Access.ADMIN && stringChoice.equals(".")) {
+                // menu no longer exists
+            } else if (stringChoice.equals("..")) {
+                // Back to start
+            } else if (type == Access.ADMIN && !stringChoice.equals(".") && !stringChoice.equals("..")) {
+                runCmd(stringChoice);
+            }
         }
     }
 
@@ -311,70 +404,75 @@ public class Main {
         String stringChoice;
 
         if (type == Access.ADMIN) {
-            System.out.println("\n" + userName);
+            System.out.println("\n" + type + " " + userName);
             System.out.println("MANAGE BOOKINGS                       [" + currentDate.toString() + "]");
             System.out.println("-------------------------------------------------");
-            System.out.println("| 1. Search For Booking                          |");
-            System.out.println("| 2. Display All Bookings                        |");
-            System.out.println("| 3. Edit Booking                                |  NOT IMPLEMENTED");
-            System.out.println("| 4. Back To Main Menu                           |");
-            System.out.println("-------------------------------------------------");
-            System.out.print("Enter your choice >>");
-            stringChoice = input.next();
-            if (!stringChoice.equals("1") && !stringChoice.equals("2") && !stringChoice.equals("3") &&
-                    !stringChoice.equals("4")) {
-                runCmd(stringChoice);
-            } else {
-                choice = Integer.valueOf(stringChoice);
-
-                switch (choice) {
-                    case 1:
-                        printMenuSearchForBookings();
-                        break;
-                    case 2:
-                        viewBookings(Access.ADMIN, Motive.VIEW);
-                        break;
-                    case 3:
-                        break;
-                }
-            }
-        } else {
-            // View Available Rooms
-            System.out.println("\n" + userName);
-            System.out.println("VIEW AVAILABLE ROOMS                  [" + currentDate.toString() + "]");
-            System.out.println("-------------------------------------------------");
-            System.out.println("| 1. View All Currently Available Rooms          |");
-            System.out.println("| 2. View Available Rooms Within Specified Dates |  NOT IMPLEMENTED");
+            System.out.println("| 1. Display All Bookings                        |");
+            System.out.println("| 2. Search For Booking                          |");
             System.out.println("| 3. Back To Main Menu                           |");
             System.out.println("-------------------------------------------------");
             System.out.print("Enter your choice >>");
             stringChoice = input.next();
-            if (stringChoice.equals(".")) {
-                // Back to startMenu
+            if (!stringChoice.equals("1") && !stringChoice.equals("2") && !stringChoice.equals("3")) {
+                runCmd(stringChoice);
             } else {
-                choice = Integer.valueOf(stringChoice);
+                    choice = Integer.valueOf(stringChoice);
+
 
                 switch (choice) {
                     case 1:
-                        viewRooms(Access.GUEST, Filter.AVAILABLE, Motive.VIEW);
+                        viewBookings(Access.ADMIN, Motive.VIEW);
                         break;
+                    case 2:
+                        printMenuSearchForBookings();
+                        break;
+                    case 3:
+                        break;
+                }
+                }
+            }
+         else {
+            // View Available Rooms
+            System.out.println("\n" + type + " " + userName);
+            System.out.println("VIEW AVAILABLE ROOMS                  [" + currentDate.toString() + "]");
+            System.out.println("-------------------------------------------------");
+            System.out.println("| 1. View All Currently Available Rooms          |");
+            System.out.println("| 2. View Available Rooms Within Time Period     |");
+            System.out.println("| 3. Back To Main Menu                           |");
+            System.out.println("-------------------------------------------------");
+            System.out.print("Enter your choice >>");
+            stringChoice = input.next();
+            if (!stringChoice.equals("1") && !stringChoice.equals("2") && !stringChoice.equals("3")) {
+                // back to startMenu
+            } else {
+                    choice = Integer.valueOf(stringChoice);
+
+                    switch (choice) {
+                        case 1:
+                            viewRooms(Access.GUEST, Filter.AVAILABLE, Motive.VIEW);
+                            break;
+                        case 2:
+                            viewRoomsWithinDates();
+                            break;
+                    }
                 }
             }
         }
-    }
+
 
     private void printMenuSearchForBookings() {
         int choice;
         String stringChoice;
 
-        System.out.println("\nSEARCH FOR BOOKING(S) BY:             [" + currentDate.toString() + "]");
+        System.out.println("\n" + Access.ADMIN + " " + userName);
+        System.out.println("SEARCH FOR BOOKINGS BY:               [" + currentDate.toString() + "]");
         System.out.println("-------------------------------------------------");
         System.out.println("| 1. Name                                        |");
         System.out.println("| 2. Booking ID                                  |");
         System.out.println("| 3. Check-Out Date                              |");
         System.out.println("| 4. Back To Main Menu                           |");
         System.out.println("-------------------------------------------------");
-        System.out.print("Enter your choice>>");
+        System.out.print("Enter your choice >>");
         stringChoice = input.next();
         if (!stringChoice.equals("1") && !stringChoice.equals("2") &&
                 !stringChoice.equals("3") && !stringChoice.equals("4")) {
@@ -399,8 +497,6 @@ public class Main {
                     break;
             }
         }
-
-
     }
 
     private void searchForBookings(Filter filt) {
@@ -453,19 +549,21 @@ public class Main {
         if (indexes.size() == 0) {
             System.out.println("\nThere are no booking(s) which match given search criteria");
         } else {
-            System.out.println("\nSEARCH FOR BOOKING(S)                                          [" + currentDate.toString() + "]");
-            System.out.println("---------------------------------------------------------------------------");
+            System.out.println("\nVIEW BOOKINGS");
+            System.out.println("MOTIVE.SEARCH                                                              [" + currentDate.toString() + "]");
+            System.out.println("---------------------------------------------------------------------------------------");
             for (int x = 0; x < indexes.size(); x++) {
                 for (int i = 0; i < bookingDirectory.size(); i++) {
                     if (i == indexes.get(x)) {
-                        System.out.printf("[%d] [NAME: %s %s] [RNR: %d] [CHECK-OUT: %s] [SEK: %.2f]%n",
+                        System.out.printf("[%d] [NAME: %s %s] [RNR: %d] [FROM: %s - %s] [SEK: %.2f]%n",
                                 bookingDirectory.get(i).getBookingId(), bookingDirectory.get(i).getCustomer().getFirstName(),
                                 bookingDirectory.get(i).getCustomer().getLastName(), bookingDirectory.get(i).getRoom().getRoomNumber(),
+                                bookingDirectory.get(i).getCheckIn().toString(),
                                 bookingDirectory.get(i).getCheckOut().toString(), bookingDirectory.get(i).getTotalPrice());
                     }
                 }
             }
-            System.out.println("---------------------------------------------------------------------------");
+            System.out.println("---------------------------------------------------------------------------------------");
         }
         System.out.print("Press any key >>");
         stringChoice = input.next();
@@ -475,7 +573,13 @@ public class Main {
             printMenuII(Access.ADMIN);
         } else if (stringChoice.equals("...")) {
             //  Back to startMenu
-        } else if (!stringChoice.equals(".") && !stringChoice.equals("..") && !stringChoice.equals("...")) {
+        } else if (stringChoice.equals(".r") && filt == Filter.CHECKOUT) {
+            searchForBookings(Filter.CHECKOUT);
+        } else if (stringChoice.equals(".r") && filt == Filter.NAME) {
+            searchForBookings(Filter.NAME);
+        } else if (stringChoice.equals(".r") && filt == Filter.ID) {
+            searchForBookings(Filter.ID);
+        } else if (!stringChoice.equals(".") && !stringChoice.equals("..") && !stringChoice.equals("...") && !stringChoice.equals("r")) {
             runCmd(stringChoice);
         }
 
@@ -486,21 +590,35 @@ public class Main {
         String stringChoice;
         int counter = 0, id = 0;
         ArrayList<Integer> indexes = new ArrayList<>();
+        String[] array = {"", " ", "  ", "   ", "    ", "     ", "      ", "       ", "        ", "         ", "          ",
+        "           ", "            ", "             ", "              ", "               "};
+        int nameLength = 0;
+        int largetBookingId = 0;
 
         System.out.println("");
         if (type == Access.ADMIN) {
             if (bookingDirectory.size() >= 1) {
-                System.out.println("DISPLAY BOOKINGS                                                        [" + currentDate.toString() + "]");
-                System.out.println("------------------------------------------------------------------------------------");
                 for (int i = 0; i < bookingDirectory.size(); i++) {
-                    System.out.printf("[%d] [NAME: %s %s] [RNR: %d] [FROM: %s - %s] [SEK: %.2f]%n",
-                            bookingDirectory.get(i).getBookingId(), bookingDirectory.get(i).getCustomer().getFirstName(),
-                            bookingDirectory.get(i).getCustomer().getLastName(), bookingDirectory.get(i).getRoom().getRoomNumber(),
-                            bookingDirectory.get(i).getCheckIn().toString(),
-                            bookingDirectory.get(i).getCheckOut().toString(), bookingDirectory.get(i).getTotalPrice());
+                    if (bookingDirectory.get(i).getCustomer().getFirstName().length() +
+                        bookingDirectory.get(i).getCustomer().getLastName().length() > nameLength) {
+                        nameLength = bookingDirectory.get(i).getCustomer().getFirstName().length() + bookingDirectory.get(i).getCustomer().getLastName().length();
+                    }
+                }
+                nameLength = nameLength + 1;
+                System.out.println("VIEW BOOKINGS                                                              [" + currentDate.toString() + "]");
+                System.out.println("---------------------------------------------------------------------------------------");
+                for (int i = 0; i < bookingDirectory.size(); i++) {
+                    System.out.printf("[%d]%s[NAME: %s %s]%s[RNR: %d]%s[FROM: %s - %s] [SEK: %.2f]%n",
+                            bookingDirectory.get(i).getBookingId(), bookingDirectory.get(bookingDirectory.size() - 1).getBookingId() >= 10 &&
+                                    bookingDirectory.get(i).getBookingId() < 10 ? "  " : " ",
+                            bookingDirectory.get(i).getCustomer().getFirstName(), bookingDirectory.get(i).getCustomer().getLastName(),
+                            array[nameLength - (bookingDirectory.get(i).getCustomer().getFirstName().length() + bookingDirectory.get(i).getCustomer().getLastName().length())],
+                            bookingDirectory.get(i).getRoom().getRoomNumber(), bookingDirectory.get(i).getRoom().getRoomNumber() >= 10 ? " " : "  ",
+                            bookingDirectory.get(i).getCheckIn().toString(), bookingDirectory.get(i).getCheckOut().toString(),
+                            bookingDirectory.get(i).getTotalPrice());
 
                 }
-                System.out.println("------------------------------------------------------------------------------------");
+                System.out.println("---------------------------------------------------------------------------------------");
             } else {
                 System.out.println("Booking directory is empty");
             }
@@ -520,17 +638,32 @@ public class Main {
                     counter++;
                 }
             }
+
+            for (int i = 0; i < indexes.size(); i++) {
+                if (bookingDirectory.get(indexes.get(i)).getBookingId() > largetBookingId) {
+                    largetBookingId = bookingDirectory.get(indexes.get(i)).getBookingId();
+                }
+            }
             if (counter == bookingDirectory.size()) {
                 System.out.println("You have no current bookings");
             } else {
-                System.out.println("ACTIVE BOOKINGS                                                         [" + currentDate.toString() + "]");
+                if (point == Motive.VIEW) {
+                    System.out.println("VIEW ACTIVE BOOKINGS\nMOTIVE." + point + "                                                             [" + currentDate.toString() + "]");
+                } else if (point == Motive.EDIT) {
+                    System.out.println("VIEW ACTIVE BOOKINGS\nMOTIVE." + point + "                                                             [" + currentDate.toString() + "]");
+                } else if (point == Motive.CHECKOUT) {
+                    System.out.println("VIEW ACTIVE BOOKINGS\nMOTIVE." + point + "                                                         [" + currentDate.toString() + "]");
+                }
                 System.out.println("------------------------------------------------------------------------------------");
                 for (int x = 0; x < indexes.size(); x++) {
                     for (int i = 0; i < bookingDirectory.size(); i++) {
                         if (i == indexes.get(x)) {
-                            System.out.printf("[%d] [NAME: %s %s] [RNR: %d] [FROM: %s - %s] [SEK: %.2f]%n",
-                                    bookingDirectory.get(i).getBookingId(), bookingDirectory.get(i).getCustomer().getFirstName(),
+                            System.out.printf("[%d]%s[NAME: %s %s] [RNR: %d]%s[FROM: %s - %s] [SEK: %.2f]%n",
+                                    bookingDirectory.get(i).getBookingId(), largetBookingId >= 10 &&
+                                    bookingDirectory.get(i).getBookingId() < 10 ? "  " : " ",
+                                    bookingDirectory.get(i).getCustomer().getFirstName(),
                                     bookingDirectory.get(i).getCustomer().getLastName(), bookingDirectory.get(i).getRoom().getRoomNumber(),
+                                    bookingDirectory.get(i).getRoom().getRoomNumber() >= 10 ? " " : "  ",
                                     bookingDirectory.get(i).getCheckIn().toString(), bookingDirectory.get(i).getCheckOut().toString(),
                                     bookingDirectory.get(i).getTotalPrice());
                         }
@@ -558,13 +691,13 @@ public class Main {
         String stringChoice;
 
         if (type == Access.ADMIN) {
-            System.out.println("\n" + userName);
+            System.out.println("\n" + type + " " + userName);
             System.out.println("MANAGE ACCOMMODATIONS                 [" + currentDate.toString() + "]");
             System.out.println("-------------------------------------------------");
             System.out.println("| 1. View Available Rooms                        |");
             System.out.println("| 2. View All Rooms                              |");
-            System.out.println("| 3. Edit Room                                   |");
-            System.out.println("| 4. Add Room                                    |");
+            System.out.println("| 3. Add Room                                    |");
+            System.out.println("| 4. Edit Room                                   |");
             System.out.println("| 5. Remove Room                                 |");
             System.out.println("| 6. Back To Main Menu                           |");
             System.out.println("-------------------------------------------------");
@@ -585,10 +718,10 @@ public class Main {
                         viewRooms(Access.ADMIN, Filter.ALL, Motive.VIEW);
                         break;
                     case 3:
-                        printMenuEditRoom();
+                        addRemoveRoom(Filter.ADD);
                         break;
                     case 4:
-                        addRemoveRoom(Filter.ADD);
+                        printMenuEditRoom();
                         break;
                     case 5:
                         addRemoveRoom(Filter.REMOVE);
@@ -600,6 +733,128 @@ public class Main {
         }
     }
 
+    private void viewRoomsWithinDates() {
+        String stringChoice;
+        int counter = 0;
+        int checkInYear = 2018, checkOutYear = 2018;
+        int checkInMonth, checkOutMonth;
+        int checkInDay, checkOutDay;
+        int[] daysPerMonth = {0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+
+        System.out.println("");
+
+        do {
+            System.out.println(" --------------- ");
+            System.out.println("| CHECK-IN DATE |");
+            System.out.println("| ------------- |");
+            counter = 0;
+            System.out.println("| YEAR:  2018");
+              System.out.print("| MONTH: ");
+            checkInMonth = input.nextInt();
+              System.out.print("| DAY:   ");
+            checkInDay = input.nextInt();
+            System.out.println(" --------------- ");
+            if (checkInMonth <= 0 || checkInMonth > 12) {
+                System.out.println("\n Month must be 1-12");
+                counter++;
+            }
+            if (checkInDay <= 0 || checkInDay > daysPerMonth[checkInMonth] && !(checkInMonth == 2 && checkInDay == 29)) {
+                System.out.println("\n day (" + checkInDay + ") out-of-range for specified month");
+                counter++;
+            }
+            if (checkInMonth == 2 & checkInDay == 29 && !(checkInYear % 400 == 0 || (checkInYear % 4 == 0 && checkInYear % 100 != 0))) {
+                System.out.println("\n day ( " + checkInDay + ") out of range for the specified month and year");
+                counter++;
+            }
+            if (checkInMonth < currentDate.getMonth() || checkInMonth == currentDate.getMonth() && checkInDay <= currentDate.getDay()) {
+                System.out.println("\n out-of-range");
+                counter++;
+            }
+        } while (counter != 0);
+
+        // Irrelevant seeing as we don't allow for any reservations.
+        do {
+            System.out.println(" ---------------- ");
+            System.out.println("| CHECK-OUT DATE |");
+            System.out.println("| -------------- |");
+            counter = 0;
+            System.out.println("| YEAR:  2018");
+              System.out.print("| MONTH: ");
+            checkOutMonth = input.nextInt();
+              System.out.print("| DAY:   ");
+            checkOutDay = input.nextInt();
+            System.out.println(" ---------------- ");
+            if (checkOutMonth <= 0 || checkOutMonth > 12) {
+                System.out.println("\nMonth must be 1-12");
+                counter++;
+            }
+            if (checkOutDay <= 0 || checkOutDay > daysPerMonth[checkOutMonth] && !(checkOutMonth == 2 && checkOutDay == 29)) {
+                System.out.println("\nday (" + checkOutDay + ") out-of-range for specified month");
+                counter++;
+            }
+            if (checkOutMonth == 2 & checkOutDay == 29 && !(checkOutYear % 400 == 0 || (checkOutYear % 4 == 0 && checkOutYear % 100 != 0))) {
+                System.out.println("\nday ( " + checkOutDay + ") out of range for the specified month and year");
+                counter++;
+            }
+            if (checkOutMonth < checkInMonth || checkInMonth == checkOutMonth && checkInDay > checkOutDay) {
+                System.out.println("\nout-of-range");
+                counter++;
+            }
+        } while (counter != 0);
+
+        Room[] sortByRnr = new Room[100];
+        Date fromThisDate = new Date(checkInYear, checkInMonth, checkInDay);
+        Date toThisDate = new Date(checkOutYear, checkOutMonth, checkOutDay);
+
+        // 100 %
+        for (int i = 0; i < roomDirectory.size(); i++) {
+            if (!roomDirectory.get(i).isBooked()) {
+                sortByRnr[roomDirectory.get(i).getRoomNumber()] = roomDirectory.get(i);
+            }
+        }
+
+        //
+        for (int i = 0; i < bookingDirectory.size(); i++) {
+            if (bookingDirectory.get(i).getCheckOut().getMonth() == fromThisDate.getMonth() && bookingDirectory.get(i).getCheckOut().getDay() <= fromThisDate.getDay() ||
+                bookingDirectory.get(i).getCheckOut().getMonth() == fromThisDate.getMonth() - 1) {
+                sortByRnr[bookingDirectory.get(i).getRoom().getRoomNumber()] = bookingDirectory.get(i).getRoom();
+            }
+        }
+
+        // Output!
+        System.out.println("\nVIEW ROOMS");
+        System.out.println("FILTER.AVAILABLE FROM");
+        System.out.println(fromThisDate.toString() + " - " + toThisDate.toString() + "                             [" + currentDate.toString() + "]");
+        System.out.printf("%s %5s %7s %11s", "RNR", "BEDS", "BALCONY", "PRICE (SEK)");
+        System.out.printf("%8s %6s %7s %7s%n", "RNR", "BEDS", "BALCONY", "PRICE (SEK)");
+        System.out.println("-----------------------------------------------------------------");
+        for (int i = 0; i < sortByRnr.length; i++) {
+            if (sortByRnr[i] != null) {
+                System.out.printf("%2d %5d %6s %10.2f    |    ", sortByRnr[i].getRoomNumber(), sortByRnr[i].getNumberOfBeds(),
+                        sortByRnr[i].isHasBalcony() ? "Yes" : "No", sortByRnr[i].getPricePerNight());
+                counter++;
+
+                if (counter % 2 == 0) {
+                    System.out.println("");
+                }
+            }
+
+        }
+        if (counter % 2 != 0) {
+            System.out.println("                              |");
+        }
+        System.out.println("-----------------------------------------------------------------");
+        // clear array
+        for (int i = 0; i < sortByRnr.length; i++) {
+            sortByRnr[i] = null;
+        }
+        System.out.print("Press any key >>");
+        stringChoice = input.next();
+        if (stringChoice.equals(".")) {
+            printMenuII(Access.GUEST);
+        }
+    }
+
     private void viewRooms(Access type, Filter filt, Motive point) {
         String stringChoice;
         int counter = 0;
@@ -608,8 +863,14 @@ public class Main {
 
         if (filt == Filter.ALL) {
             if (roomDirectory.size() > 1) {
-                System.out.println("VIEW ROOMS");
-                System.out.println("FILTER.ALL                                          [" + currentDate.toString() + "]");
+                if (point == Motive.VIEW) {
+                    System.out.println("VIEW ROOMS");
+                    System.out.println("FILTER.ALL                                          [" + currentDate.toString() + "]");
+                } else if (point == Motive.EDIT) {
+                    System.out.println("EDIT ROOM\nSELECT ROOM                                         [" + currentDate.toString() + "]");
+                } else if (point == Motive.REMOVE) {
+                    System.out.println("REMOVE ROOM\nSELECT ROOM                                         [" + currentDate.toString() + "]");
+                }
                 System.out.printf("%s %5s %7s %11s", "RNR", "BEDS", "BALCONY", "PRICE (SEK)");
                 System.out.printf("%8s %6s %7s %7s%n", "RNR", "BEDS", "BALCONY", "PRICE (SEK)");
                 System.out.println("-----------------------------------------------------------------");
@@ -649,6 +910,10 @@ public class Main {
                     System.out.println("VIEW ROOMS\nFILTER.AVAILABLE                                    [" + currentDate.toString() + "]");
                 } else if (point == Motive.BOOKING) {
                     System.out.println("NEW BOOKING\nSELECT ROOM                                         [" + currentDate.toString() + "]");
+                } else if (point == Motive.EDIT) {
+                    System.out.println("EDIT BOOKING\nSELECT NEW ROOM                                     [" + currentDate.toString() + "]");
+                } else if (point == Motive.REMOVE) {
+                    System.out.println("REMOVE ROOM\nSELECT ROOM                                         [" + currentDate.toString() + "]");
                 }
                 System.out.printf("%s %5s %7s %11s", "RNR", "BEDS", "BALCONY", "PRICE (SEK)");
                 System.out.printf("%8s %6s %7s %7s%n", "RNR", "BEDS", "BALCONY", "PRICE (SEK)");
@@ -668,13 +933,15 @@ public class Main {
                 }
                 System.out.println("-----------------------------------------------------------------");
 
-            } else {
+            } else if (availableRoomCounter == 1) {
                 if (point == Motive.VIEW) {
                     System.out.println("VIEW ROOMS");
                     System.out.println("FILTER.AVAILABLE              [" + currentDate.toString() + "]");
                 } else if (point == Motive.BOOKING) {
                     System.out.println("ADD BOOKING                   [" + currentDate.toString() + "]");
 
+                } else if (point == Motive.EDIT) {
+                    System.out.println("SELECT NEW ROOM               [" + currentDate.toString() + "]");
                 }
                 System.out.printf("%s %9s %12s %15s%n", "RNR", "BEDS", "BALCONY", "PRICE (SEK)");
                 System.out.println("-------------------------------------------");
@@ -685,6 +952,8 @@ public class Main {
                     }
                 }
                 System.out.println("-------------------------------------------");
+            } else if (availableRoomCounter == 0) {
+                System.out.println("There are no currently available rooms");
             }
         }
         if (point == Motive.VIEW) {
@@ -710,8 +979,8 @@ public class Main {
         double pricePerNight;
         String stringChoice, temp;
 
-        System.out.println("");
         if (filt == Filter.ADD) {
+            System.out.println("");
             do {
                 counter = 0;
                 System.out.print("Enter room's room number: ");
@@ -766,18 +1035,11 @@ public class Main {
                 }
             } while (counter != 0);
             roomDirectory.add(new Room(roomNumber, numberOfBeds, hasBalcony, pricePerNight));
-            System.out.println("Room successfully added to room directory");
-            System.out.print("Press any key >>");
-            stringChoice = input.next();
-            if (stringChoice.equals(".")) {
-                printMenuIII(Access.ADMIN);
-            } else if (stringChoice.equals("..")) {
+            System.out.println("\nRoom successfully added to room directory");
 
-            } else if (!stringChoice.equals(".") && !stringChoice.equals("..")) {
-                runCmd(stringChoice);
-            }
         } else if (filt == Filter.REMOVE) {
             index = 99; // variable won't ever take on default value
+            viewRooms(Access.ADMIN, Filter.ALL, Motive.REMOVE);
             do {
                 counter = 0;
                 System.out.print("Enter RNR: ");
@@ -806,19 +1068,25 @@ public class Main {
             System.out.println("-------------------------------");
             System.out.print("Are you sure? (y/n): ");
             temp = input.next();
-            if (temp.equals("y") || temp.equals("yes")) {
+            if (temp.equalsIgnoreCase("y") || temp.equalsIgnoreCase("yes")) {
                 roomDirectory.remove(index);
-                System.out.println("Room successfully removed");
+                System.out.println("\nRoom successfully removed");
             }
-            System.out.print("Press any key >>");
-            stringChoice = input.next();
-            if (stringChoice.equals(".")) {
-                printMenuIII(Access.ADMIN);
-            } else if (stringChoice.equals("..")) {
+        }
+        System.out.print("Press any key >>");
+        stringChoice = input.next();
+        if (stringChoice.equals(".")) {
+            printMenuIII(Access.ADMIN);
+        } else if (stringChoice.equals("..")) {
+            // back to startMenu
+        } else if (stringChoice.equals("...")) {
 
-            } else if (!stringChoice.equals(".") && !stringChoice.equals("..")) {
-                runCmd(stringChoice);
-            }
+        } else if (stringChoice.equals(".r") && filt == Filter.ADD) {
+            addRemoveRoom(Filter.ADD);
+        } else if (stringChoice.equals(".r") && filt == Filter.REMOVE) {
+            addRemoveRoom(Filter.REMOVE);
+        } else {
+            runCmd(stringChoice);
         }
     }
 
@@ -826,7 +1094,7 @@ public class Main {
         int choice;
         String stringChoice;
 
-        System.out.println("\n" + userName);
+        System.out.println("\n" + Access.ADMIN + " " + userName);
         System.out.println("EDIT ROOM                             [" + currentDate.toString() + "]");
         System.out.println("-------------------------------------------------");
         System.out.println("| 1. Edit Room Number                            |");
@@ -870,12 +1138,12 @@ public class Main {
     }
 
     private void editRoom(Filter filt) {
-        String stringChoice;
+        String stringChoice, temp;
         int roomNumber, numberOfBeds, counter, index = 99;
-        boolean hasBalcony;
+        boolean hasBalcony = false;
         double pricePerNight;
 
-        System.out.println("");
+        viewRooms(Access.ADMIN, Filter.ALL, Motive.EDIT);
         if (filt == Filter.ALL) {
             do {
                 counter = 0;
@@ -927,7 +1195,10 @@ public class Main {
             } while (numberOfBeds != 1 && numberOfBeds != 2 && numberOfBeds != 3 && numberOfBeds != 4);
 
             System.out.print("New has Balcony status (true/false): ");
-            hasBalcony = input.nextBoolean();
+            temp = input.next();
+            if (temp.equalsIgnoreCase("yes") || temp.equalsIgnoreCase("true")) {
+                hasBalcony = true;
+            }
 
             do {
                 System.out.print("New Price per night: ");
@@ -940,7 +1211,7 @@ public class Main {
             roomDirectory.get(index).setNumberOfBeds(numberOfBeds);
             roomDirectory.get(index).setHasBalcony(hasBalcony);
             roomDirectory.get(index).setPricePerNight(pricePerNight);
-            System.out.println("Room successfully updated");
+            System.out.println("\nRoom successfully updated");
         } else if (filt == Filter.RNR) {
             do {
                 counter = 0;
@@ -982,7 +1253,7 @@ public class Main {
                 }
             } while (counter != 0);
             roomDirectory.get(index).setRoomNumber(roomNumber);
-            System.out.println("Room successfully updated");
+            System.out.println("\nRoom successfully updated");
         } else if (filt == Filter.BEDS) {
             do {
                 counter = 0;
@@ -1018,7 +1289,7 @@ public class Main {
                 }
             } while (numberOfBeds != 1 && numberOfBeds != 2 && numberOfBeds != 3 && numberOfBeds != 4);
             roomDirectory.get(index).setNumberOfBeds(numberOfBeds);
-            System.out.println("Room successfully updated");
+            System.out.println("\nRoom successfully updated");
         } else if (filt == Filter.BALCONY) {
             do {
                 counter = 0;
@@ -1047,9 +1318,12 @@ public class Main {
                     roomDirectory.get(index).isHasBalcony() ? "Yes" : "No", roomDirectory.get(index).getPricePerNight());
             System.out.println("-------------------------------");
             System.out.print("New has Balcony status (true/false): ");
-            hasBalcony = input.nextBoolean();
+            temp = input.next();
+            if (temp.equalsIgnoreCase("yes") || temp.equalsIgnoreCase("true")) {
+                hasBalcony = true;
+            }
             roomDirectory.get(index).setHasBalcony(hasBalcony);
-            System.out.println("Room successfully updated");
+            System.out.println("\nRoom successfully updated");
         } else if (filt == Filter.PRICE) {
             do {
                 counter = 0;
@@ -1085,7 +1359,7 @@ public class Main {
                 }
             } while (pricePerNight < 1000 || pricePerNight > 2500);
             roomDirectory.get(index).setPricePerNight(pricePerNight);
-            System.out.println("Room successfully updated");
+            System.out.println("\nRoom successfully updated");
         }
         System.out.print("Press any key >>");
         stringChoice = input.next();
@@ -1094,8 +1368,18 @@ public class Main {
         } else if (stringChoice.equals("..")) {
             printMenuIII(Access.ADMIN);
         } else if (stringChoice.equals("...")) {
-            printMenuStart(Access.ADMIN);
-        } else if (!stringChoice.equals(".") && !stringChoice.equals("..") && !stringChoice.equals("...")) {
+            // back to startMenu
+        } else if (stringChoice.equals(".r") && filt == Filter.RNR) {
+            editRoom(Filter.RNR);
+        } else if (stringChoice.equals(".r") && filt == Filter.BEDS) {
+            editRoom(Filter.BEDS);
+        } else if (stringChoice.equals(".r") && filt == Filter.BALCONY) {
+            editRoom(Filter.BALCONY);
+        } else if (stringChoice.equals(".r") && filt == Filter.PRICE) {
+            editRoom(Filter.PRICE);
+        } else if (stringChoice.equals(".r") && filt == Filter.ALL) {
+            editRoom(Filter.ALL);
+        } else {
             runCmd(stringChoice);
         }
     }
@@ -1106,12 +1390,12 @@ public class Main {
         String stringChoice;
 
         if (type == Access.ADMIN) {
-            System.out.println("\n" + userName);
+            System.out.println("\n" + type + " " + userName);
             System.out.println("MANAGE CUSTOMERS                      [" + currentDate.toString() + "]");
             System.out.println("-------------------------------------------------");
-            System.out.println("| 1. Add New Customer                            |");
-            System.out.println("| 2. Remove Customer                             |");
-            System.out.println("| 3. Display Customers                           |");
+            System.out.println("| 1. Display All Customers                       |");
+            System.out.println("| 2. Add Customer                                |");
+            System.out.println("| 3. Remove Customer                             |");
             System.out.println("| 4. Back To Main Menu                           |");
             System.out.println("-------------------------------------------------");
             System.out.print("Enter your choice >>");
@@ -1124,13 +1408,13 @@ public class Main {
 
                 switch (choice) {
                     case 1:
-                        addCustomer();
+                        viewCustomers(Motive.VIEW);
                         break;
                     case 2:
-                        removeCustomer();
+                        addCustomer();
                         break;
                     case 3:
-                        viewCustomers(Motive.VIEW);
+                        removeCustomer();
                         break;
                     case 4:
                         break;
@@ -1141,11 +1425,12 @@ public class Main {
                 }
             }
         } else {
-            System.out.println("\n" + userName + "\nEDIT INFORMATION                      [" + currentDate.toString() + "]");
+            System.out.println("\n" + type + " " + userName);
+            System.out.println("EDIT INFORMATION                     [" + currentDate.toString() + "]");
             System.out.println("-------------------------------------------------");
-            System.out.println("| 1. Update Your Address                         |");
+            System.out.println("| 1. Display Your Personal Information           |");
             System.out.println("| 2. Update Your Phone Number                    |");
-            System.out.println("| 3. View Your Personal Information              |");
+            System.out.println("| 3. Update Your Your Address                    |");
             System.out.println("| 4. Back To Main Menu                           |");
             System.out.println("-------------------------------------------------");
             System.out.print("Enter your choice >>");
@@ -1157,13 +1442,13 @@ public class Main {
 
                 switch (choice) {
                     case 1:
-                        updateCustomerInfo(Filter.ADDRESS);
+                        viewCustomerInfo();
                         break;
                     case 2:
                         updateCustomerInfo(Filter.PHONE);
                         break;
                     case 3:
-                        viewCustomerInfo();
+                        updateCustomerInfo(Filter.ADDRESS);
                         break;
                     case 4:
                         break;
@@ -1179,6 +1464,7 @@ public class Main {
     private void viewCustomerInfo() {
         int index = 99; // will never actually take on value 99
         String stringChoice;
+
         input.nextLine();
 
         System.out.println("");
@@ -1240,7 +1526,7 @@ public class Main {
             } while (counter != 0);
             customerDirectory.get(index).setTelephoneNumber(string);
         }
-        System.out.print("Information successfully updated\nPress any key >>");
+        System.out.print("\nPersonal information successfully updated\nPress any key >>");
         stringChoice = input.next();
         if (stringChoice.equals(".")) {
             printMenuIV(Access.GUEST);
@@ -1317,13 +1603,16 @@ public class Main {
         listOfUsers.add(temp);
         System.out.printf("Auto-generated username: %s%nAuto-generated password: %s%n",
                 temp.getUserName(), temp.getPassWord());
+        System.out.println("\nCustomer successfully added");
         System.out.print("Press any key >>");
         stringChoice = input.next();
         if (stringChoice.equals(".")) {
             printMenuIV(Access.ADMIN);
         } else if (stringChoice.equals("..")) {
 
-        } else if (!stringChoice.equals(".") && !stringChoice.equals("..")) {
+        } else if (stringChoice.equals(".r")) {
+            addCustomer();
+        } else {
             runCmd(stringChoice);
         }
     }
@@ -1389,8 +1678,10 @@ public class Main {
             if (stringChoice.equals(".")) {
                 printMenuIV(Access.ADMIN);
             } else if (stringChoice.equals("..")) {
-
-            } else if (!stringChoice.equals(".") && !stringChoice.equals("..")) {
+                //  back to startMenu
+            } else if (stringChoice.equals(".r")) {
+                removeCustomer();
+            } else {
                 runCmd(stringChoice);
             }
         }
@@ -1398,6 +1689,9 @@ public class Main {
 
     private void viewCustomers(Motive point) {
         String stringChoice;
+        String[] array = {"", " ", "  ", "   ", "    ", "     ", "      ", "       ", "        ", "         ", "          ",
+                "           ", "            ", "             ", "              ", "               "};
+        int nameLength = 0;
 
         System.out.println("");
         if (customerDirectory.size() == 0) {
@@ -1412,15 +1706,25 @@ public class Main {
                 runCmd(stringChoice);
             }
         } else if (customerDirectory.size() > 0) {
+
+            for (int i = 0; i < customerDirectory.size(); i++) {
+                if (customerDirectory.get(i).getFirstName().length() + customerDirectory.get(i).getLastName().length() > nameLength) {
+                    nameLength = customerDirectory.get(i).getFirstName().length() + customerDirectory.get(i).getLastName().length();
+                }
+            }
+            nameLength = nameLength + 1;
             if (point == Motive.BOOKING) {
                 System.out.println("NEW BOOKING\nSELECT CUSTOMER                                                            [" + currentDate.toString() + "]");
             } else if (point == Motive.VIEW) {
-                System.out.println("DISPLAY CUSTOMERS                                                          [" + currentDate.toString() + "]");
+                System.out.println("VIEW CUSTOMERS                                                             [" + currentDate.toString() + "]");
             }
             System.out.println("---------------------------------------------------------------------------------------");
             for (int i = 0; i < customerDirectory.size(); i++) {
-                System.out.printf("[%s] [NAME: %s %s] [SSN: %s] [PHONE: %s] [ADDRESS: %s]%n", customerDirectory.get(i).getCustomerId(),
+                System.out.printf("[%d]%s[NAME: %s %s]%s[SSN: %s] [PHONE: %s] [ADDRESS: %s]%n",
+                        customerDirectory.get(i).getCustomerId(), customerDirectory.get(customerDirectory.size() - 1).getCustomerId() >= 10 &&
+                                customerDirectory.get(i).getCustomerId() < 10 ? "  " : " ",
                         customerDirectory.get(i).getFirstName(), customerDirectory.get(i).getLastName(),
+                        array[nameLength - (customerDirectory.get(i).getFirstName().length() + customerDirectory.get(i).getLastName().length())],
                         customerDirectory.get(i).getSSN(), customerDirectory.get(i).getTelephoneNumber(),
                         customerDirectory.get(i).getAddress());
             }
@@ -1447,22 +1751,51 @@ public class Main {
         int choice;
 
         if (type == Access.ADMIN) { // Account Settings
+            System.out.println("\n" + type + " " + userName);
+            System.out.println("MANAGE ACCOUNTS                       [" + currentDate.toString() + "]");
+            System.out.println("-------------------------------------------------");
+            System.out.println("| 1. Display All Accounts                        |");
+            System.out.println("| 2. Change Your Password                        |");
+            System.out.println("| 3. Back To Main Menu                           |");
+            System.out.println("-------------------------------------------------");
+            System.out.print("Enter your choice >>");
+            stringChoice = input.next();
+            if (!stringChoice.equals("1") && !stringChoice.equals("2") &&
+                    !stringChoice.equals("3")) {
+                runCmd(stringChoice);
+
+            } else {
+                choice = Integer.valueOf(stringChoice);
+
+                switch (choice) {
+                    case 1:
+                        viewAccounts();
+                        break;
+                    case 2:
+                        configureAccount(Filter.PASSWORD);
+                        break;
+                    case 3:
+                        break;
+                }
+            }
 
         } else if (type == Access.GUEST) { // Edit Booking
-
-            System.out.println("\nMANAGE BOOKINGS                       [" + currentDate.toString() + "]");
+            System.out.println("\n" + type + " " + userName);
+            System.out.println("MANAGE BOOKINGS                       [" + currentDate.toString() + "]");
             System.out.println("-------------------------------------------------");
-            System.out.println("| 1. Edit Booking                                |  NOT IMPLEMENTED");
-            System.out.println("| 2. View Your Booking History                   |  NOT IMPLEMENTED");
+            System.out.println("| 1. Display Your Booking History                |");
+            System.out.println("| 2. Edit Booking                                |");
             System.out.println("| 3. Back To Main Menu                           |");
             System.out.println("-------------------------------------------------");
             System.out.print("Enter your choice >>");
             stringChoice = input.next();
 
             switch (stringChoice) {
-                case "1": // Edit Booking
+                case "1":
+                    viewBookingHistory();
                     break;
-                case "2": // View Booking History / RD/LD to Binary File
+                case "2":
+                    printMenuEditBooking();
                     break;
                 case "3":
                     break;
@@ -1470,11 +1803,312 @@ public class Main {
 
         }
     }
-    private void editBooking() {
 
+
+    private void viewBookingHistory() {
+        String stringChoice;
+
+        System.out.println("");
+        bookingHistory = ReadWriteObject.readObject();
+        if (bookingHistory.size() != 0) {
+            System.out.println("VIEW BOOKING HISTORY\nREAD FROM FILE                                                          [" + currentDate.toString() + "]");
+            System.out.println("------------------------------------------------------------------------------------");
+            for (int i = 0; i < bookingHistory.size(); i++) {
+                if (bookingHistory.get(i) instanceof Booking && ((Booking) bookingHistory.get(i)).getCustomer().getUserName().equals(userName)) {
+                    System.out.printf("[NAME: %s %s] [RNR: %d]%s[FROM: %s - %s] [SEK: %.2f]%n",
+                            ((Booking) bookingHistory.get(i)).getCustomer().getFirstName(), ((Booking) bookingHistory.get(i)).getCustomer().getLastName(),
+                            ((Booking) bookingHistory.get(i)).getRoom().getRoomNumber(), ((Booking) bookingHistory.get(i)).getRoom().getRoomNumber() >= 10 ? " " : "  ",
+                            ((Booking) bookingHistory.get(i)).getCheckIn().toString(),
+                            ((Booking) bookingHistory.get(i)).getCheckOut().toString(), ((Booking) bookingHistory.get(i)).getTotalPrice());
+                }
+            }
+            System.out.println("------------------------------------------------------------------------------------");
+        } else {
+            System.out.println("You have no history of any bookings");
+        }
+        System.out.print("Press any key >>");
+        stringChoice = input.next();
+        if (stringChoice.equals(".")) {
+            printMenuV(Access.GUEST);
+        }
     }
-    private void accountSettings() {
 
+    private void printMenuEditBooking() {
+        String stringChoice;
+        int choice;
+
+        System.out.println("\n" + Access.GUEST + " " + userName);
+        System.out.println("EDIT BOOKING                          [" + currentDate.toString() + "]");
+        System.out.println("-------------------------------------------------");
+        System.out.println("| 1. Change Room                                 |");
+        System.out.println("| 2. Change Check-Out Date                       |");
+        System.out.println("| 3. Discard Booking And Add a New One           |");
+        System.out.println("| 4. Back To Main Menu                           |");
+        System.out.println("-------------------------------------------------");
+        System.out.print("Enter your choice >>");
+        stringChoice = input.next();
+        if (!stringChoice.equals("1") && !stringChoice.equals("2") &&
+                !stringChoice.equals("3") && !stringChoice.equals("4")) {
+            if (stringChoice.equals(".")) {
+                printMenuV(Access.GUEST);
+            }
+            if (stringChoice.equals("..")) {
+                // Back to startMenu
+            }
+        } else {
+            choice = Integer.valueOf(stringChoice);
+
+            switch (choice) {
+                case 1: // Change Room
+                    editBooking(Filter.ROOM);
+                    break;
+                case 2: // Change Check-Out Date
+                    editBooking(Filter.CHECKOUT);
+                    break;
+                case 3: // New Booking
+                    editBooking(Filter.ALL);
+                    break;
+                case 4:
+                    break;
+            }
+        }
+    }
+
+    private void editBooking(Filter filt) {
+        String stringChoice;
+        int roomNumber, roomIndex = 99, counter = 0;
+        int bookingId, numberOfBookings = 0, bookingIndex = 99;
+        int[] daysPerMonth = {0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+        int year = 2018, month, day;
+        double pricePerNight, totalPrice;
+
+        if (filt == Filter.ROOM) {
+            viewBookings(Access.GUEST, Motive.EDIT);
+            for (int i = 0; i < bookingDirectory.size(); i++) {
+                if (bookingDirectory.get(i).getCustomer().getUserName().equals(userName)) {
+                    numberOfBookings++;
+                }
+            }
+            if (numberOfBookings >= 1) {
+                do {
+                    System.out.print("Select Booking ID: ");
+                    bookingId = input.nextInt();
+                    for (int i = 0; i < bookingDirectory.size(); i++) {
+                        if (bookingDirectory.get(i).getBookingId() == bookingId) {
+                            bookingIndex = i;
+                            break;
+                        }
+                    }
+                    if (!bookingDirectory.get(bookingIndex).getCustomer().getUserName().equals(userName)) {
+                        System.out.println("\nbID [" + bookingId + "] does not belong to user [" + userName + "]");
+                    }
+                } while (!bookingDirectory.get(bookingIndex).getCustomer().getUserName().equals(userName));
+                viewRooms(Access.GUEST, Filter.AVAILABLE, Motive.EDIT);
+                do {
+                    do {
+                        System.out.print("Select Room's RNR: ");
+                        roomNumber = input.nextInt();
+                        if (roomNumber <= 0 || roomNumber > roomDirectory.size()) {
+                            System.out.println("\nRNR [" + roomNumber + "] does not exist in room directory");
+                        }
+                    } while (roomNumber <= 0 || roomNumber > roomDirectory.size());
+                    for (int i = 0; i < roomDirectory.size(); i++) {
+                        if (roomDirectory.get(i).getRoomNumber() == roomNumber) {
+                            roomIndex = i;
+                            break;
+                        }
+                    }
+                    if (roomDirectory.get(roomIndex).isBooked()) {
+                        System.out.println("\nRNR [" + roomNumber + "] is not available for booking");
+                    }
+                } while (roomDirectory.get(roomIndex).isBooked());
+                // roomIndex
+                // bookingIndex
+                bookingDirectory.get(bookingIndex).getRoom().setBooked(false);
+                bookingDirectory.get(bookingIndex).setRoom(roomDirectory.get(roomIndex));
+                totalPrice = calculateTotalPrice(bookingDirectory.get(bookingIndex).getCheckIn(), bookingDirectory.get(bookingIndex).getCheckOut(),
+                        bookingDirectory.get(bookingIndex).getRoom().getPricePerNight());
+                bookingDirectory.get(bookingIndex).setTotalPrice(totalPrice);
+                System.out.println("\nBooking successfully edited");
+            }
+        } else if (filt == Filter.CHECKOUT) {
+            viewBookings(Access.GUEST, Motive.EDIT);
+            for (int i = 0; i < bookingDirectory.size(); i++) {
+                if (bookingDirectory.get(i).getCustomer().getUserName().equals(userName)) {
+                    numberOfBookings++;
+                }
+            }
+            if (numberOfBookings >= 1) {
+                do {
+                    System.out.print("Select Booking ID: ");
+                    bookingId = input.nextInt();
+                    for (int i = 0; i < bookingDirectory.size(); i++) {
+                        if (bookingDirectory.get(i).getBookingId() == bookingId) {
+                            bookingIndex = i;
+                            break;
+                        }
+                    }
+                    if (!bookingDirectory.get(bookingIndex).getCustomer().getUserName().equals(userName)) {
+                        System.out.println("\nbID [" + bookingId + "] does not belong to user [" + userName + "]");
+                    }
+                } while (!bookingDirectory.get(bookingIndex).getCustomer().getUserName().equals(userName));
+                // Date
+                System.out.println("");
+                System.out.println(" ---------------     ----------------");
+                System.out.println("| CHECK-IN DATE |   | CHECK-OUT DATE |");
+                System.out.println("| ------------- |   | ---------------  ");
+                do {
+                    counter = 0;
+                    System.out.println("| YEAR:  2018   |   | YEAR:  2018");
+                    System.out.print("| MONTH: 11     |   | MONTH: ");
+                    month = input.nextInt();
+                    System.out.print("| DAY:   29     |   | DAY:   ");
+                    day = input.nextInt();
+                    System.out.println("--------------------------------------");
+                    if (month <= 0 || month > 12) {
+                        System.out.println("\nMonth must be 1-12");
+                        counter++;
+                    }
+                    if (day <= 0 || day > daysPerMonth[month] && !(month == 2 && day == 29)) {
+                        System.out.println("\nday (" + day + ") out-of-range for specified month");
+                        counter++;
+                    }
+                    if (month == 2 & day == 29 && !(year % 400 == 0 || (year % 4 == 0 && year % 100 != 0))) {
+                        System.out.println("\nday ( " + day + ") out of range for the specified month and year");
+                        counter++;
+                    }
+                    if (month < currentDate.getMonth() || month == currentDate.getMonth() && day <= currentDate.getDay()) {
+                        System.out.println("\nout-of-range");
+                        counter++;
+                    }
+                } while (counter != 0);
+
+                Date checkIn = currentDate;
+                Date checkOut = new Date(year, month, day);
+                totalPrice = calculateTotalPrice(checkIn, checkOut, bookingDirectory.get(bookingIndex).getRoom().getPricePerNight());
+                bookingDirectory.get(bookingIndex).setCheckOut(checkOut);
+                bookingDirectory.get(bookingIndex).setTotalPrice(totalPrice);
+                System.out.println("\nBooking successfully edited");
+            }
+        } else if (filt == Filter.ALL) {
+            viewBookings(Access.GUEST, Motive.EDIT);
+            for (int i = 0; i < bookingDirectory.size(); i++) {
+                if (bookingDirectory.get(i).getCustomer().getUserName().equals(userName)) {
+                    numberOfBookings++;
+                }
+            }
+            if (numberOfBookings >= 1) {
+                do {
+                    System.out.print("Select Booking ID: ");
+                    bookingId = input.nextInt();
+                    for (int i = 0; i < bookingDirectory.size(); i++) {
+                        if (bookingDirectory.get(i).getBookingId() == bookingId) {
+                            bookingIndex = i;
+                            break;
+                        }
+                    }
+                    if (!bookingDirectory.get(bookingIndex).getCustomer().getUserName().equals(userName)) {
+                        System.out.println("\nbID [" + bookingId + "] does not belong to user [" + userName + "]");
+                    }
+                } while (!bookingDirectory.get(bookingIndex).getCustomer().getUserName().equals(userName));
+                for (int i = 0; i < bookingDirectory.size(); i++) {
+                    if (bookingDirectory.get(i).getBookingId() == bookingId) {
+                        bookingIndex = i;
+                    }
+                }
+                addBooking(Access.GUEST, Motive.EDIT);
+                bookingDirectory.remove(bookingIndex);
+            }
+        }
+        System.out.print("Press any key >>");
+        stringChoice = input.next();
+        if (stringChoice.equals(".")) {
+            printMenuEditBooking();
+        } else if (stringChoice.equals("..")) {
+            printMenuV(Access.GUEST);
+        }
+    }
+
+    private void configureAccount(Filter filt) {
+        int choice, index = 0;
+        String stringChoice;
+        String passWord, newPassWord = "", verifyPassWord = ".";
+        boolean acceptable = true;
+
+        System.out.println("");
+        if (filt == Filter.USERNAME) {
+
+        } else if (filt == Filter.PASSWORD) {
+            for (int i = 0; i < listOfUsers.size(); i++) {
+                if (listOfUsers.get(i).getUserName().equals(userName)) {
+                    index = i;
+                    break;
+                }
+            }
+            do {
+                System.out.print("Enter old password: ");
+                passWord = input.next();
+                if (!listOfUsers.get(index).getPassWord().equals(passWord)) {
+                    System.out.println("\nIncorrect password");
+                }
+            } while (!listOfUsers.get(index).getPassWord().equals(passWord));
+
+            for (int attempts = 2; attempts > 0; attempts--) {
+                System.out.print("Enter new password: ");
+                newPassWord = input.next();
+                System.out.print("Verify new password: ");
+                verifyPassWord = input.next();
+                if (!verifyPassWord.equals(newPassWord)) {
+                    System.out.println("\nPasswords don't match. [" + attempts + "] tries left");
+                } else {
+                    attempts = 0;
+                }
+            }
+            if (listOfUsers.get(index).getPassWord().equals(passWord) && newPassWord.equals(verifyPassWord) && !verifyPassWord.equals("")) {
+                listOfUsers.get(index).setPassWord(newPassWord);
+                System.out.println("\nPassword successfully changed");
+            }
+
+        }
+        System.out.print("Press any key >>");
+        stringChoice = input.next();
+        if (stringChoice.equals(".")) {
+            printMenuV(Access.ADMIN);
+        } else if (stringChoice.equals("..")) {
+            // back to startMenu
+        } else if (!stringChoice.equals(".") && !stringChoice.equals("..")) {
+            runCmd(stringChoice);
+        }
+    }
+
+    private void viewAccounts() {
+        String stringChoice;
+
+        System.out.println("");
+        System.out.println("VIEW ACCOUNTS                                                   [" + currentDate.toString() + "]");
+        System.out.println("----------------------------------------------------------------------------");
+        for (int i = 0; i < listOfUsers.size(); i++) {
+            if (listOfUsers.get(i) instanceof Customer) {
+                System.out.printf("[Access: %s] [User: %s] [Pwd: %s] [ID [%s] Name: %s %s]%n",
+                        listOfUsers.get(i).getFullAccess() ? "ADMIN" : "GUEST", listOfUsers.get(i).getUserName(), listOfUsers.get(i).getPassWord(),
+                        ((Customer) listOfUsers.get(i)).getCustomerId(), ((Customer) listOfUsers.get(i)).getFirstName(),
+                        ((Customer) listOfUsers.get(i)).getLastName());
+            } else {
+                System.out.printf("[Access: %s] [User: %s] [Pwd: %s]%n",
+                        listOfUsers.get(i).getFullAccess() ? "ADMIN" : "GUEST",
+                        listOfUsers.get(i).getUserName(), listOfUsers.get(i).getPassWord());
+            }
+        }
+        System.out.println("----------------------------------------------------------------------------");
+        System.out.print("Press any key >>");
+        stringChoice = input.next();
+        if (stringChoice.equals(".")) {
+            printMenuV(Access.ADMIN);
+        } else if (stringChoice.equals("..")) {
+            //  back to startMenu
+        } else if (!stringChoice.equals(".") && !stringChoice.equals("..")) {
+            runCmd(stringChoice);
+        }
     }
 
     private void printMenuVI(Access type) { // LOGOUT / CHECKOUT
@@ -1488,10 +2122,11 @@ public class Main {
 
         }
     }
+
     private void checkout() {
         int bookingId, index = 0, counter = 0;
         String stringChoice;
-        viewBookings(Access.GUEST, Motive.BOOKING);
+        viewBookings(Access.GUEST, Motive.CHECKOUT);
         for (int i = 0; i < bookingDirectory.size(); i++) {
             if (bookingDirectory.get(i).getCustomer().getUserName().equals(userName)) {
                 counter++;
@@ -1516,9 +2151,10 @@ public class Main {
     }
 
     private void logout() {
-        System.out.println("");
+        System.out.println("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
         input.nextLine();
         cont = false;
+
     }
 
     private void exit() {
@@ -1533,7 +2169,7 @@ public class Main {
         if (type == Access.ADMIN) {
             exit();
         } else if (type == Access.GUEST) {
-            helpMe(Access.GUEST);
+            printHelpMenuStart(Access.GUEST);
         }
     }
 
@@ -1554,6 +2190,231 @@ public class Main {
         }
         if (type == Access.GUEST) {
             exit();
+        }
+    }
+
+    private void printHelpMenuGeneral(Access type) {
+        int choice;
+        String stringChoice;
+
+        if (type == Access.ADMIN) {
+            System.out.println("\n" + "[" + userName + " - username]");
+            System.out.println("[" + type + " - user access]");
+            System.out.println("[HELP MENU - menu name]               [" + currentDate.toString() + "]");
+            System.out.println("-------------------------------------------------");
+            System.out.println("| [>>] indicates that the program is open to     |");
+            System.out.println("| receiving commands. Type in .cmd for more info |");
+            System.out.println("| on which commands are available.               |");
+            System.out.println("| Only the admin user type is able to use cmds.  |");
+            System.out.println("| You can navigate the menus easier by entering: |");
+            System.out.println("| . / .. / ... : To go one, two or three steps   |");
+            System.out.println("| backwards (if possible).                       |");
+            System.out.println("| .r is sometimes avaiable and will 'recall' the |");
+            System.out.println("| method that you're currently in. Ex, after     | ");
+            System.out.println("| adding a customer you can enter in .r to add   |");
+            System.out.println("| another customer.                              |");
+            System.out.println("-------------------------------------------------");
+            System.out.print("Press any key >>");
+            stringChoice = input.next();
+            if (stringChoice.equals(".")) {
+                printHelpMenuStart(Access.ADMIN);
+            } else {
+                runCmd(stringChoice);
+            }
+        }
+
+        else if (type == Access.GUEST) {
+            System.out.println("\n" + "[" + userName + " - username]");
+            System.out.println("[" + type + " - user access]");
+            System.out.println("[HELP MENU - menu name]               [" + currentDate.toString() + "]");
+            System.out.println("-------------------------------------------------");
+            System.out.println("| [>>] indicates that you can enter:             |");
+            System.out.println("| . / .. / ... : To go one, two or three steps   |");
+            System.out.println("| backwards (if possible). The guest user can    |");
+            System.out.println("| not use any commands.                          |");
+            System.out.println("-------------------------------------------------");
+            System.out.print("Press any key >>");
+            stringChoice = input.next();
+
+            if (stringChoice.equals(".")) {
+                printHelpMenuStart(Access.GUEST);
+            }
+        }
+    }
+    private void printHelpMenuBooking(Access type) {
+        String stringChoice;
+
+        if (type == Access.ADMIN) {
+            System.out.println("\n" + type + " " + userName);
+            System.out.println("HELP MENU BOOKINGS                     " + currentDate.toString() + "]");
+            System.out.println("-------------------------------------------------");
+            System.out.println("| The admin user can not make any bookings, but  |");
+            System.out.println("| can view, search for and edit any bookings in  |");
+            System.out.println("| the system. Each booking requires and has one  |");
+            System.out.println("| customer, one room and one check-out date.     |");
+            System.out.println("| All bookings are made on the same              |");
+            System.out.println("| date - [2018/11/29 with no reservations.       |");
+            System.out.println("| The latest possible check-out date for a       |");
+            System.out.println("| booking is on [2018/12/31].                    |");
+            System.out.println("-------------------------------------------------");
+            System.out.print("Press any key >>");
+            stringChoice = input.next();
+            if (stringChoice.equals(".")) {
+                printHelpMenuStart(Access.ADMIN);
+            } else {
+                runCmd(stringChoice);
+            }
+        }
+
+        else if (type == Access.GUEST) {
+            System.out.println("\n" + type + " " + userName);
+            System.out.println("HELP MENU BOOKINGS                     " + currentDate.toString() + "]");
+            System.out.println("-------------------------------------------------");
+            System.out.println("| A customer can make a booking by viewing a     |");
+            System.out.println("| list of currently available rooms and          |");
+            System.out.println("| selecting a check-out date no later than       |");
+            System.out.println("| [2018/12/31]. Check-in date is always set      |");
+            System.out.println("| to equal the current date. No reservations.    |");
+            System.out.println("| A customer can checkout by viewing a list of   | ");
+            System.out.println("| all their bookings and selecting one.          |");
+            System.out.println("-------------------------------------------------");
+            System.out.print("Press any key >>");
+            stringChoice = input.next();
+
+            if (stringChoice.equals(".")) {
+                printHelpMenuStart(Access.GUEST);
+            }
+        }
+    }
+
+    private void printHelpMenuAccommodations(Access type) {
+        String stringChoice;
+
+        if (type == Access.ADMIN) {
+            System.out.println("\n" + type + " " + userName);
+            System.out.println("HELP MENU ACCOMMODATIONS              [" + currentDate.toString() + "]");
+            System.out.println("-------------------------------------------------");
+            System.out.println("| The program starts with 25 hotel rooms, which  |");
+            System.out.println("| all have the following attributes:             |");
+            System.out.println("| (roomNumber, numberOfBeds, hasBalcony, price,  |");
+            System.out.println("| isBooked)                                      |");
+            System.out.println("| And the following domains:                     |");
+            System.out.println("| roomNumber:    (0 < rN < 100)                  |");
+            System.out.println("| numberOfBeds:  (0 < nOB < 5)                   |");
+            System.out.println("| hasBalcony:    (true/false)                    |");
+            System.out.println("| pricePerNight: (1000 <= pPN <= 2500)           |");
+            System.out.println("| isBooked:      (true/false)                    |");
+            System.out.println("| The admin user type can add, remove and        |");
+            System.out.println("| edit all of the hotels rooms and all of        |");
+            System.out.println("| their attributes.                              |");
+            System.out.println("| The admin user can also view a list of all     |");
+            System.out.println("| rooms and a list of all currently available    |");
+            System.out.println("| rooms.                                         |");
+            System.out.println("-------------------------------------------------");
+            System.out.print("Press any key >>");
+            stringChoice = input.next();
+            if (stringChoice.equals(".")) {
+                printHelpMenuStart(Access.ADMIN);
+            } else {
+                runCmd(stringChoice);
+            }
+        }
+
+        else if (type == Access.GUEST) {
+            System.out.println("\n" + type + " " + userName);
+            System.out.println("HELP MENU ACCOMMODATIONS              [" + currentDate.toString() + "]");
+            System.out.println("-------------------------------------------------");
+            System.out.println("| A customer can only view a list of all         |");
+            System.out.println("| currently available rooms.                     |");
+            System.out.println("-------------------------------------------------");
+            System.out.print("Press any key >>");
+            stringChoice = input.next();
+
+            if (stringChoice.equals(".")) {
+                printHelpMenuStart(Access.GUEST);
+            }
+        }
+    }
+
+    private void printHelpMenuCustomer(Access type) {
+        String stringChoice;
+
+        if (type == Access.ADMIN) {
+            System.out.println("\n" + type + " " + userName);
+            System.out.println("HELP MENU CUSTOMERS                   [" + currentDate.toString() + "]");
+            System.out.println("-------------------------------------------------");
+            System.out.println("| The admin user can add and remove customers to |");
+            System.out.println("| and from the system. Only individual customers |");
+            System.out.println("| can edit their information via their personal  |");
+            System.out.println("| account.                                       |");
+            System.out.println("| The admin user can also view all of the        |");
+            System.out.println("| customers currently in the system.             |");
+            System.out.println("-------------------------------------------------");
+            System.out.print("Press any key >>");
+            stringChoice = input.next();
+
+            if (stringChoice.equals(".")) {
+                printHelpMenuStart(Access.ADMIN);
+            } else {
+                runCmd(stringChoice);
+            }
+        }
+
+        else if (type == Access.GUEST) {
+            System.out.println("\n" + type + " " + userName);
+            System.out.println("HELP MENU CUSTOMERS                   [" + currentDate.toString() + "]");
+            System.out.println("-------------------------------------------------");
+            System.out.println("| A customer can only view and edit their own    |");
+            System.out.println("| personal information.                          |");
+            System.out.println("-------------------------------------------------");
+            System.out.print("Press any key >>");
+            stringChoice = input.next();
+
+            if (stringChoice.equals(".")) {
+                printHelpMenuStart(Access.GUEST);
+            }
+        }
+    }
+
+    private void printHelpMenuAccount(Access type) {
+        String stringChoice;
+
+        if (type == Access.ADMIN) {
+            System.out.println("\n" + type + " " + userName);
+            System.out.println("HELP MENU ACCOUNTS                    [" + currentDate.toString() + "]");
+            System.out.println("-------------------------------------------------");
+            System.out.println("| When a customer is added to the system,        |");
+            System.out.println("| a user is automatically also created and added.|");
+            System.out.println("| The admin user type can view all user accounts |");
+            System.out.println("| and can change their own user login information|");
+            System.out.println("| When a customer is removed they will no longer |");
+            System.out.println("| be able to login into the system.              |");
+            System.out.println("-------------------------------------------------");
+            System.out.print("Press any key >>");
+            stringChoice = input.next();
+
+            if (stringChoice.equals(".")) {
+                printHelpMenuStart(Access.ADMIN);
+            } else {
+                runCmd(stringChoice);
+            }
+        }
+
+        if (type == Access.GUEST) {
+            System.out.println("\n" + type + " " + userName);
+            System.out.println("HELP MENU ACCOUNTS                    [" + currentDate.toString() + "]");
+            System.out.println("-------------------------------------------------");
+            System.out.println("| A customer's login username is always set as   |");
+            System.out.println("| their lastname + a number representing how many|");
+            System.out.println("| users are in the system with that particular   |");
+            System.out.println("| lastname. Login password is always '1234'.     |");
+            System.out.println("-------------------------------------------------");
+            System.out.print("Press any key >>");
+            stringChoice = input.next();
+
+            if (stringChoice.equals(".")) {
+                printHelpMenuStart(Access.GUEST);
+            }
         }
     }
 
@@ -1707,25 +2568,49 @@ public class Main {
             case ".sfb":
                 printMenuSearchForBookings();
                 break;
+            case ".sfbname":
+                searchForBookings(Filter.NAME);
+                break;
+            case ".sfbid":
+                searchForBookings(Filter.ID);
+                break;
+            case ".sfbout":
+                searchForBookings(Filter.CHECKOUT);
+                break;
+            case ".viewa":
+                viewAccounts();
+                break;
+            case ".help":
+                printHelpMenuStart(Access.ADMIN);
+                break;
+            case ".changepwd":
+                configureAccount(Filter.PASSWORD);
+                break;
+            case ".mna":
+                printMenuV(Access.ADMIN);
+                break;
         }
     }
 
     private void printCmdHelper() {
         String stringChoice;
 
-        System.out.print("\n" + Access.ADMIN);
-        System.out.println(" COMMANDS                                                                                                                 [" + currentDate.toString() + "]");
-        System.out.println("-----------------------------------------------------------------------------------------------------------------------------------------");
-        System.out.println("[.viewc]    --  to view all customers      | [.nb]          --  to goto new booking           | [>>]         --  commands are usable      |");
-        System.out.println("[.addc]     --  to add a customer          | [.mnb]         --  to goto manage bookings menu  | [.]          --  to go back one step      |");
-        System.out.println("[.viewr]    --  to view available rooms    | [.mnr]         --  to goto manage rooms menu     | [..]         --  to go back two steps     |");
-        System.out.println("[.viewallr] --  to view all rooms          | [.mnc]         --  to goto manage customers menu | [...]        --  to go back three steps   |");
-        System.out.println("[.addr]     --  to add a room              | [.viewb]       --  to view  bookings             | [.exit]      --  to exit program          |");
-        System.out.println("[.rmr]      --  to remove a room           |                                                  | [.edrb]      --  to edit balcony          |");
-        System.out.println("[.edall]    --  to edit all attributes     | [.edrp]        --  to edit a rooms price         | [.edrnob]    --  to edit number of beds   |");
-        System.out.println("[.edrrnr]   --  to edit RNR                |                                                  | [.logout]    --  to logout current user   |");
-        System.out.println("[.sfb]      --  to goto search for booking |                                                  |                                           |");
-        System.out.println("------------------------------------------------------------------------------------------------------------------------------------------");
+        System.out.println("\n" + Access.ADMIN + " " + userName);
+        System.out.println("VIEW COMMANDS                                                                                                                    [" + currentDate.toString() + "]");
+        System.out.println("--------------------------------------------------------------------------------------------------------------------------------------------");
+        System.out.println("[.viewc]    --  to view all customers        | [.nb]          --  to goto new booking           | [>>]         --  commands are usable      |");
+        System.out.println("[.addc]     --  to add a customer            | [.mnb]         --  to goto manage bookings menu  | [.]          --  to go back one step      |");
+        System.out.println("[.viewr]    --  to view available rooms      | [.mnr]         --  to goto manage rooms menu     | [..]         --  to go back two steps     |");
+        System.out.println("[.viewallr] --  to view all rooms            | [.mnc]         --  to goto manage customers menu | [...]        --  to go back three steps   |");
+        System.out.println("[.addr]     --  to add a room                | [.viewb]       --  to view bookings              | [.exit]      --  to exit program          |");
+        System.out.println("[.rmr]      --  to remove a room             | [.sfb]         --  to goto search for booking    | [.logout]    --  to logout current user   |");
+        System.out.println("[.edall]    --  to edit all attributes       | [.sfbout]      --  to search for booking w date  | [.cmd]       --  to print cmd menu        |");
+        System.out.println("[.edrrnr]   --  to edit RNR                  | [.sfbname]     --  to search for booking w name  | [.help]      --  to print help menu       |");
+        System.out.println("[.edrp]     --  to edit a rooms price        | [.sfbid]       --  to search for booking w id    | [.start]     --  to goto start menu       |");
+        System.out.println("[.edrb]     --  to edit balcony              | [.rmc]         --  to remove a customer          | [.r]         --  retry/recall             |");
+        System.out.println("[.edrnob]   --  to edit number of beds       | [.viewa]       --  to view all accounts          | [.changepwd] --  to change pwd (temp)     |");
+        System.out.println("[.mna]      --  to goto manage accounts      |                                                  |                                           |");
+        System.out.println("--------------------------------------------------------------------------------------------------------------------------------------------");
         System.out.print("Press any key >>");
         stringChoice = input.next();
         runCmd(stringChoice);

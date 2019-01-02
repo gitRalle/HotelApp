@@ -1,4 +1,6 @@
-public class Customer extends User {
+import java.io.Serializable;
+
+public class Customer extends User implements Serializable {
     private static int idCounter = 0;
     private final int customerId = ++idCounter;
     private String firstName;

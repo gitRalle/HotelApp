@@ -1,7 +1,7 @@
 import java.security.SecureRandom;
 import java.util.ArrayList;
 
-public class Rooms {
+public class RoomGenerator {
     private static SecureRandom rand = new SecureRandom();
     private static int[] beds = {1, 2};
     private static double[] price = {1000, 1250, 1500, 2000};
@@ -10,7 +10,7 @@ public class Rooms {
 
     private ArrayList<Room> listOfRooms = new ArrayList<>();
 
-    public Rooms() {
+    public RoomGenerator() {
         for (int i = 0; i < NUMBER_OF_ROOMS; i++) {
             listOfRooms.add(new Room(i + 1, beds[rand.nextInt(2)], balcony[rand.nextInt(2)],
                     price[rand.nextInt(4)]));
